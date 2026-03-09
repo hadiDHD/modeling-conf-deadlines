@@ -78,8 +78,13 @@
       </div>
     </div>
     <div id="confs">
+      <h2 class="section-heading">Conferences</h2>
       <div id="coming_confs">
+        {% assign today = site.time | date: '%Y-%m-%d' %}
         {% for conf in site.data.conferences %}
+        {% if conf.type != "journal" %}
+        {% assign dl = conf.deadline | split: ' ' | first %}
+        {% if dl >= today or dl == "TBA" %}
         <div id="{{conf.id}}" class="ConfItem {% for sub in conf.sub %} {{sub}}-conf {% endfor %}">
           <div class="row conf-row">
             <div class="col-xs-5 col-sm-6">
@@ -126,9 +131,57 @@
           </div>
           <hr>
         </div>
+        {% endif %}
+        {% endif %}
         {% endfor %}
       </div>
       <div id="past_confs">
+      </div>
+
+      <h2 class="section-heading">Journals</h2>
+      <div id="journals">
+        {% for conf in site.data.conferences %}
+        {% if conf.type == "journal" %}
+        <div id="{{conf.id}}" class="ConfItem journal-item {% for sub in conf.sub %} {{sub}}-conf {% endfor %}">
+          <div class="row conf-row">
+            <div class="col-xs-5 col-sm-6">
+              <a class="conf-title" href="{{conf.link}}">{{conf.title}}</a>
+            </div>
+            <div class="col-xs-7 col-sm-6">
+              <span class="timer"></span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-6">
+              <div class="meta">
+                <span class="conf-place">
+                  <a href="{{conf.link}}">{{conf.link | replace: 'https://', '' | replace: 'http://', '' | truncate: 50}}</a>
+                </span>
+              </div>
+              {% if conf.note %}
+              <div class="note">
+                {{conf.note}}
+              </div>
+              {% endif %}
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <div class="deadline">
+                <div>Submission: <span class="deadline-time"></span></div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              {% for sub in conf.sub %}
+              <span title="Click to only show {{sub}}" data-sub="{{sub}}"
+                class="conf-sub {{sub}}-tag"></span>
+              {% endfor %}
+            </div>
+          </div>
+          <hr>
+        </div>
+        {% endif %}
+        {% endfor %}
       </div>
     </div>
     <footer>

@@ -1,6 +1,6 @@
 title: Modeling Conference Deadlines
 
-description: Countdowns to conference deadlines with modeling focus (CLEM-relevant venues). Auto-synced from upstream and Researchr.
+description: Countdowns to conference deadlines with modeling focus. Auto-synced from upstream and Researchr.
 author: hadiDHD (fork of judithmichael/modeling-conf-deadlines)
 domain: ""
 baseurl: "https://hadiDHD.github.io/modeling-conf-deadlines/"

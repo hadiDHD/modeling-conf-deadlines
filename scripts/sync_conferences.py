@@ -37,10 +37,37 @@ ACRONYM_SUB = {
     "ER": "DB", "SPLASH": "PL",
 }
 
-# Only consider submission deadlines in this year and next
+# Consider submission deadlines from this year through two years ahead
 CURRENT_YEAR = datetime.utcnow().year
 YEAR_MIN = CURRENT_YEAR
-YEAR_MAX = CURRENT_YEAR + 1
+YEAR_MAX = CURRENT_YEAR + 2
+
+# Canonical list: every conference and journal that must appear on the page.
+# If the API doesn't return them, these are added with TBA so they still show.
+# Links are the authoritative URLs you requested.
+CANONICAL_CONFERENCES = [
+    {"title": "MODELS", "id": "models2026", "link": "https://conf.researchr.org/home/models-2026", "year": 2026, "sub": "SE"},
+    {"title": "MODELS Workshops", "id": "models-workshops2026", "link": "https://conf.researchr.org/track/models-2026/models-2026-workshops", "year": 2026, "sub": "SE"},
+    {"title": "ECMFA", "id": "ecmfa2026", "link": "https://www.ecmfa.org/", "year": 2026, "sub": "SE"},
+    {"title": "SLE", "id": "sle2026", "link": "https://conf.researchr.org/home/sle-2026", "year": 2026, "sub": "SE"},
+    {"title": "ER", "id": "er2026", "link": "https://er2026.org", "year": 2026, "sub": "DB"},
+    {"title": "POEM", "id": "poem2026", "link": "https://poem-conference.org", "year": 2026, "sub": "SE"},
+    {"title": "ICSE", "id": "icse2026", "link": "https://conf.researchr.org/home/icse-2026", "year": 2026, "sub": "SE"},
+    {"title": "ASE", "id": "ase2026", "link": "https://conf.researchr.org/home/ase-2026", "year": 2026, "sub": "SE"},
+    {"title": "SSBSE", "id": "ssbse2026", "link": "https://conf.researchr.org/home/ssbse-2026", "year": 2026, "sub": "SE"},
+    {"title": "ANNSIM", "id": "annsim2026", "link": "https://scs.org/annsim/", "year": 2026, "sub": "SE"},
+    {"title": "MoDELSWARD", "id": "modelsward2026", "link": "https://modelsward.scitevents.org", "year": 2026, "sub": "SE"},
+    {"title": "FASE", "id": "fase2026", "link": "https://etaps.org/events/fase", "year": 2026, "sub": "SE"},
+]
+CANONICAL_JOURNALS = [
+    {"title": "Software and Systems Modeling (SoSyM)", "id": "sosym", "link": "https://www.springer.com/journal/10270", "year": 2026, "sub": "SE"},
+    {"title": "Journal of Systems and Software", "id": "jss", "link": "https://www.sciencedirect.com/journal/journal-of-systems-and-software", "year": 2026, "sub": "SE"},
+    {"title": "Empirical Software Engineering", "id": "emse", "link": "https://www.springer.com/journal/10664", "year": 2026, "sub": "SE"},
+    {"title": "ACM TOSEM", "id": "tosem", "link": "https://dl.acm.org/journal/tosem", "year": 2026, "sub": "SE"},
+    {"title": "IEEE TSE", "id": "tse", "link": "https://www.computer.org/csdl/journal/ts", "year": 2026, "sub": "SE"},
+    {"title": "Journal of Object Technology", "id": "jot", "link": "https://www.jot.fm", "year": 2026, "sub": "SE"},
+    {"title": "Simulation Modelling Practice and Theory", "id": "smpat", "link": "https://www.sciencedirect.com/journal/simulation-modelling-practice-and-theory", "year": 2026, "sub": "SE"},
+]
 
 
 def normalize_key(key: str) -> str:
@@ -133,6 +160,7 @@ def researchr_to_entry(c: dict) -> dict | None:
         "date": format_date_range(start, end),
         "place": place,
         "sub": sub,
+        "type": "conference",
     }
 
 
@@ -244,6 +272,7 @@ def fetch_wikicfp() -> list[dict]:
             "date": "",
             "place": "",
             "sub": DEFAULT_SUB,
+            "type": "conference",
         })
     return out
 
@@ -268,6 +297,47 @@ def sort_entries(entries: list[dict]) -> list[dict]:
     return sorted(entries, key=key, reverse=True)
 
 
+def canonical_entry(c: dict, *, is_journal: bool = False) -> dict:
+    """Turn a canonical dict into a full YAML entry (deadline TBA if not set)."""
+    e = {
+        "title": c["title"],
+        "hindex": None,
+        "year": c["year"],
+        "id": c["id"],
+        "link": c["link"],
+        "deadline": c.get("deadline", "TBA"),
+        "timezone": DEFAULT_TIMEZONE,
+        "date": c.get("date", ""),
+        "place": c.get("place", ""),
+        "sub": c.get("sub", DEFAULT_SUB),
+        "type": "journal" if is_journal else "conference",
+    }
+    if is_journal:
+        e["note"] = "Rolling submission"
+    if c.get("note"):
+        e["note"] = c["note"]
+    return e
+
+
+def ensure_canonical(merged: list[dict]) -> list[dict]:
+    """Ensure every canonical conference and journal appears. Add with TBA if missing."""
+    by_link = {e.get("link"): e for e in merged}
+    out = list(merged)
+    for c in CANONICAL_CONFERENCES:
+        link = c["link"]
+        if link not in by_link:
+            entry = canonical_entry(c)
+            out.append(entry)
+            by_link[link] = entry
+    for c in CANONICAL_JOURNALS:
+        link = c["link"]
+        if link not in by_link:
+            entry = canonical_entry(c, is_journal=True)
+            out.append(entry)
+            by_link[link] = entry
+    return out
+
+
 def main() -> None:
     existing = load_existing()
     api_entries = []
@@ -286,6 +356,10 @@ def main() -> None:
     merged = merge_researchr(existing, unique_api)
     rss_entries = fetch_wikicfp()
     merged = merge_wikicfp(merged, rss_entries)
+    merged = ensure_canonical(merged)
+    for e in merged:
+        if e.get("type") not in ("conference", "journal"):
+            e["type"] = "conference"
     merged = sort_entries(merged)
     save_entries(merged)
 

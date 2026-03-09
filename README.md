@@ -1,8 +1,17 @@
 # Modeling Conference Deadlines
 
-Countdown timers for **modeling, software engineering, and conceptual modeling** conference deadlines — with a focus on venues relevant to **CLEM** (Computational Live Exploratory Modeling).
+Countdown timers for **modeling, software engineering, and conceptual modeling** conference deadlines.
 
 **Live site:** [hadiDHD.github.io/modeling-conf-deadlines](https://hadiDHD.github.io/modeling-conf-deadlines)
+
+## GitHub Pages setup
+
+This site is built with **GitHub Actions** (the `github-pages` gem doesn't satisfy GitHub's built-in build).
+
+1. Go to **Settings** → **Pages** in this repo.
+2. Under **Build and deployment** → **Source**, choose **GitHub Actions** (not "Deploy from a branch").
+3. Push to `main` (or run the "Deploy Jekyll to GitHub Pages" workflow manually). The workflow builds Jekyll with `bundle exec jekyll build` and deploys to Pages.
+4. Site URL: **https://hadiDHD.github.io/modeling-conf-deadlines/**
 
 ## Auto-sync
 

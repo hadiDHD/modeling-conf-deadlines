@@ -1,5 +1,221 @@
 ---
 
+- title: Software and Systems Modeling (SoSyM)
+  hindex: null
+  year: 2026
+  id: sosym
+  link: https://www.springer.com/journal/10270
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: Simulation Modelling Practice and Theory
+  hindex: null
+  year: 2026
+  id: smpat
+  link: https://www.sciencedirect.com/journal/simulation-modelling-practice-and-theory
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: SSBSE
+  hindex: null
+  year: 2026
+  id: ssbse2026
+  link: https://conf.researchr.org/home/ssbse-2026
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: SLE
+  hindex: null
+  year: 2026
+  id: sle2026
+  link: https://conf.researchr.org/home/sle-2026
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: POEM
+  hindex: null
+  year: 2026
+  id: poem2026
+  link: https://poem-conference.org
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: MoDELSWARD
+  hindex: null
+  year: 2026
+  id: modelsward2026
+  link: https://modelsward.scitevents.org
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: MODELS Workshops
+  hindex: null
+  year: 2026
+  id: models-workshops2026
+  link: https://conf.researchr.org/track/models-2026/models-2026-workshops
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: MODELS
+  hindex: null
+  year: 2026
+  id: models2026
+  link: https://conf.researchr.org/home/models-2026
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: Journal of Systems and Software
+  hindex: null
+  year: 2026
+  id: jss
+  link: https://www.sciencedirect.com/journal/journal-of-systems-and-software
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: Journal of Object Technology
+  hindex: null
+  year: 2026
+  id: jot
+  link: https://www.jot.fm
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: IEEE TSE
+  hindex: null
+  year: 2026
+  id: tse
+  link: https://www.computer.org/csdl/journal/ts
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: ICSE
+  hindex: null
+  year: 2026
+  id: icse2026
+  link: https://conf.researchr.org/home/icse-2026
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: FASE
+  hindex: null
+  year: 2026
+  id: fase2026
+  link: https://etaps.org/events/fase
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: Empirical Software Engineering
+  hindex: null
+  year: 2026
+  id: emse
+  link: https://www.springer.com/journal/10664
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
+- title: ER
+  hindex: null
+  year: 2026
+  id: er2026
+  link: https://er2026.org
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: DB
+  type: conference
+- title: ECMFA
+  hindex: null
+  year: 2026
+  id: ecmfa2026
+  link: https://www.ecmfa.org/
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: ASE
+  hindex: null
+  year: 2026
+  id: ase2026
+  link: https://conf.researchr.org/home/ase-2026
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: ANNSIM
+  hindex: null
+  year: 2026
+  id: annsim2026
+  link: https://scs.org/annsim/
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  type: conference
+- title: ACM TOSEM
+  hindex: null
+  year: 2026
+  id: tosem
+  link: https://dl.acm.org/journal/tosem
+  deadline: TBA
+  timezone: AoE (UTC-12h)
+  date: ''
+  place: ''
+  sub: SE
+  note: Rolling submission
+  type: conference
 - title: Engineering Digital Twins conference (EDTconf)
   hindex: null
   year: 2025
@@ -10,6 +226,7 @@
   date: October 6-7, 2025
   place: Grand Rapids, Michigan, US and hybrid
   sub: SE
+  type: conference
 - title: ER
   hindex: null
   year: 2025
@@ -21,6 +238,7 @@
   place: Poitiers / Futuroscope, France
   sub: DB
   note: Multiple Deadlines
+  type: conference
 - title: MODELS
   hindex: null
   year: 2025
@@ -32,6 +250,7 @@
   place: Michigan, Ann Arbor, USA
   sub: SE
   note: Multiple Deadlines
+  type: conference
 - title: ECMFA
   hindex: null
   year: 2025
@@ -43,6 +262,7 @@
   place: Koblenz, Germany
   sub: SE
   note: Second Submission round
+  type: conference
 - title: ICSE
   hindex: null
   year: 2025
@@ -54,6 +274,7 @@
   place: Ottawa, Ontario, Canada
   sub: SE
   note: Multiple Deadlines
+  type: conference
 - title: Engineering Digital Twins conference (EDTconf)
   hindex: null
   year: 2024
@@ -64,6 +285,7 @@
   date: September 23-24, 2024
   place: Linz, Austria
   sub: SE
+  type: conference
 - title: ASE
   hindex: null
   year: 2024
@@ -74,6 +296,7 @@
   date: October 27-November 1, 2024
   place: Sacramento, California, United States
   sub: SE
+  type: conference
 - title: ER
   hindex: null
   year: 2024
@@ -84,6 +307,7 @@
   date: October 28-31, 2024
   place: Carnegie Mellon University, Pittsburgh, USA
   sub: SE
+  type: conference
 - title: MODELS
   hindex: null
   year: 2024
@@ -95,6 +319,7 @@
   place: Linz, Austria
   sub: SE
   note: Multiple Deadlines
+  type: conference
 - title: ICSE
   hindex: null
   year: 2025
@@ -106,6 +331,7 @@
   place: Ottawa, Ontario, Canada
   sub: SE
   note: Multiple Deadlines
+  type: conference
 - title: ECMFA
   hindex: null
   year: 2024
@@ -117,6 +343,7 @@
   place: Enschede, Netherlands
   sub: SE
   note: Multiple Deadlines
+  type: conference
 - title: RE
   hindex: null
   year: 2024
@@ -127,6 +354,7 @@
   date: June 24-28, 2024
   place: Reykjavík, Iceland
   sub: SE
+  type: conference
 - title: SPLASH
   hindex: null
   year: 2024
@@ -138,6 +366,7 @@
   place: Pasadena, California, United States
   sub: PL
   note: Multiple Deadlines
+  type: conference
 - title: Modellierung
   hindex: null
   year: 2024
@@ -148,6 +377,7 @@
   date: March 12-15, 2024
   place: Potsdam, Germany
   sub: SE
+  type: conference
 - title: FSE
   hindex: null
   year: 2024
@@ -158,6 +388,7 @@
   date: July 15-19, 2024
   place: Porto de Galinhas, Brazil, Brazil
   sub: SE
+  type: conference
 - title: ICSE
   hindex: null
   year: 2024
@@ -168,3 +399,4 @@
   date: April 14-20, 2024
   place: Portugal, Lisbon
   sub: SE
+  type: conference
