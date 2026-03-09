@@ -1,185 +1,170 @@
 ---
 
 - title: Engineering Digital Twins conference (EDTconf)
-  hindex:
+  hindex: null
   year: 2025
   id: edtconf2024
   link: https://conf.researchr.org/home/edtconf-2025
-  deadline: "2025-07-02 23:59:59"
+  deadline: '2025-07-02 23:59:59'
   timezone: AoE (UTC-12h)
   date: October 6-7, 2025
-  place:  Grand Rapids, Michigan, US and hybrid
+  place: Grand Rapids, Michigan, US and hybrid
   sub: SE
-
-- title: MODELS
-  hindex:
-  year: 2025
-  id: models2025
-  link: https://conf.researchr.org/home/models-2025
-  deadline: "2025-04-04 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: October 5-10, 2025
-  place: Michigan, Ann Arbor, USA
-  sub: SE
-  note: Multiple Deadlines
-
-  - title: ER
-  hindex:
+- title: ER
+  hindex: null
   year: 2025
   id: er2025
   link: https://er2025.ensma.fr/
-  deadline: "2025-05-26 23:59:59"
+  deadline: '2025-05-26 23:59:59'
   timezone: AoE (UTC-12h)
   date: October 20-23, 2025
   place: Poitiers / Futuroscope, France
   sub: DB
   note: Multiple Deadlines
-
+- title: MODELS
+  hindex: null
+  year: 2025
+  id: models2025
+  link: https://conf.researchr.org/home/models-2025
+  deadline: '2025-04-04 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: October 5-10, 2025
+  place: Michigan, Ann Arbor, USA
+  sub: SE
+  note: Multiple Deadlines
 - title: ECMFA
-  hindex:
+  hindex: null
   year: 2025
   id: ecmfa2025
   link: https://conf.researchr.org/home/staf-2024/ecmfa-2025
-  deadline: "2025-02-07 23:59:59"
+  deadline: '2025-02-07 23:59:59'
   timezone: AoE (UTC-12h)
   date: June 10-13, 2024
   place: Koblenz, Germany
   sub: SE
   note: Second Submission round
-
+- title: ICSE
+  hindex: null
+  year: 2025
+  id: icse2025_2
+  link: https://conf.researchr.org/home/icse-2025
+  deadline: '2024-08-02 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: April 26-May 4, 2025
+  place: Ottawa, Ontario, Canada
+  sub: SE
+  note: Multiple Deadlines
 - title: Engineering Digital Twins conference (EDTconf)
-  hindex:
+  hindex: null
   year: 2024
   id: edtconf2024
   link: https://conf.researchr.org/home/edtconf-2024
-  deadline: "2024-06-24 23:59:59"
+  deadline: '2024-06-24 23:59:59'
   timezone: AoE (UTC-12h)
   date: September 23-24, 2024
   place: Linz, Austria
   sub: SE
-  
-- title: ER
-  hindex:
-  year: 2024
-  id: er2024
-  link: https://resources.sei.cmu.edu/news-events/events/er2024/
-  deadline: "2024-05-26 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: October 28-31, 2024
-  place: Carnegie Mellon University, Pittsburgh, USA
-  sub: SE
-  
-- title: ICSE
-  hindex:
-  year: 2024
-  id: icse2024
-  link: https://conf.researchr.org/home/icse-2024
-  deadline: "2023-08-01 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: April 14-20, 2024
-  place: Portugal, Lisbon
-  sub: SE
-
-- title: ICSE
-  hindex:
-  year: 2025
-  id: icse2025_1
-  link: https://conf.researchr.org/home/icse-2025
-  deadline: "2024-03-22 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: April 26-May 4, 2025
-  place: Ottawa, Ontario, Canada
-  sub: SE
-  note: Multiple Deadlines
-
-- title: ICSE
-  hindex:
-  year: 2025
-  id: icse2025_2
-  link: https://conf.researchr.org/home/icse-2025
-  deadline: "2024-08-02 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: April 26-May 4, 2025
-  place: Ottawa, Ontario, Canada
-  sub: SE
-  note: Multiple Deadlines
-
 - title: ASE
-  hindex:
+  hindex: null
   year: 2024
   id: ase2024
   link: https://conf.researchr.org/home/ase-2024
-  deadline: "2024-06-07 23:59:59"
+  deadline: '2024-06-07 23:59:59'
   timezone: AoE (UTC-12h)
   date: October 27-November 1, 2024
   place: Sacramento, California, United States
   sub: SE
-
-- title: FSE
-  hindex:
+- title: ER
+  hindex: null
   year: 2024
-  id: fse2024
-  link: https://conf.researchr.org/home/fse-2024
-  deadline: "2023-09-28 23:59:59"
+  id: er2024
+  link: https://resources.sei.cmu.edu/news-events/events/er2024/
+  deadline: '2024-05-26 23:59:59'
   timezone: AoE (UTC-12h)
-  date: July 15-19, 2024
-  place: Porto de Galinhas, Brazil, Brazil
+  date: October 28-31, 2024
+  place: Carnegie Mellon University, Pittsburgh, USA
   sub: SE
-
-- title: RE
-  hindex:
-  year: 2024
-  id: re2024
-  link: https://conf.researchr.org/home/RE-2024
-  deadline: "2024-01-24 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: June 24-28, 2024
-  place: Reykjavík, Iceland
-  sub: SE
-
-- title: SPLASH
-  hindex:
-  year: 2024
-  id: splash2024_1
-  link: https://2024.splashcon.org/
-  deadline: "2023-10-20 23:59:59"
-  timezone: AoE (UTC-12h)
-  date: October 20-25, 2024
-  place: Pasadena, California, United States
-  sub: PL
-  note: Multiple Deadlines
-
 - title: MODELS
-  hindex:
+  hindex: null
   year: 2024
   id: models2024
   link: https://conf.researchr.org/home/models-2024
-  deadline: "2024-03-28 23:59:59"
+  deadline: '2024-03-28 23:59:59'
   timezone: AoE (UTC-12h)
   date: September 22-27, 2024
   place: Linz, Austria
   sub: SE
   note: Multiple Deadlines
-
-- title: Modellierung
-  hindex:
-  year: 2024
-  id: modellierung2024
-  link: https://bpt.hpi.uni-potsdam.de/modellierung2024/
-  deadline: "2023-10-16 23:59:59"
+- title: ICSE
+  hindex: null
+  year: 2025
+  id: icse2025_1
+  link: https://conf.researchr.org/home/icse-2025
+  deadline: '2024-03-22 23:59:59'
   timezone: AoE (UTC-12h)
-  date: March 12-15, 2024
-  place: Potsdam, Germany
+  date: April 26-May 4, 2025
+  place: Ottawa, Ontario, Canada
   sub: SE
-
+  note: Multiple Deadlines
 - title: ECMFA
-  hindex:
+  hindex: null
   year: 2024
   id: ecmfa2024
   link: https://conf.researchr.org/home/staf-2024/ecmfa-2024
-  deadline: "2024-02-23 23:59:59"
+  deadline: '2024-02-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: July 8-12, 2024
   place: Enschede, Netherlands
   sub: SE
   note: Multiple Deadlines
+- title: RE
+  hindex: null
+  year: 2024
+  id: re2024
+  link: https://conf.researchr.org/home/RE-2024
+  deadline: '2024-01-24 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: June 24-28, 2024
+  place: Reykjavík, Iceland
+  sub: SE
+- title: SPLASH
+  hindex: null
+  year: 2024
+  id: splash2024_1
+  link: https://2024.splashcon.org/
+  deadline: '2023-10-20 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: October 20-25, 2024
+  place: Pasadena, California, United States
+  sub: PL
+  note: Multiple Deadlines
+- title: Modellierung
+  hindex: null
+  year: 2024
+  id: modellierung2024
+  link: https://bpt.hpi.uni-potsdam.de/modellierung2024/
+  deadline: '2023-10-16 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: March 12-15, 2024
+  place: Potsdam, Germany
+  sub: SE
+- title: FSE
+  hindex: null
+  year: 2024
+  id: fse2024
+  link: https://conf.researchr.org/home/fse-2024
+  deadline: '2023-09-28 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: July 15-19, 2024
+  place: Porto de Galinhas, Brazil, Brazil
+  sub: SE
+- title: ICSE
+  hindex: null
+  year: 2024
+  id: icse2024
+  link: https://conf.researchr.org/home/icse-2024
+  deadline: '2023-08-01 23:59:59'
+  timezone: AoE (UTC-12h)
+  date: April 14-20, 2024
+  place: Portugal, Lisbon
+  sub: SE
