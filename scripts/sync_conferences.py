@@ -159,7 +159,7 @@ def researchr_to_entry(c: dict) -> dict | None:
         "timezone": DEFAULT_TIMEZONE,
         "date": format_date_range(start, end),
         "place": place,
-        "sub": sub,
+        "sub": [sub],
         "type": "conference",
     }
 
@@ -182,7 +182,11 @@ def load_existing() -> list[dict]:
         return []
     if data is None:
         return []
-    return data if isinstance(data, list) else []
+    entries = data if isinstance(data, list) else []
+    for e in entries:
+        if isinstance(e.get("sub"), str):
+            e["sub"] = [e["sub"]]
+    return entries
 
 
 def save_entries(entries: list[dict]) -> None:
@@ -271,7 +275,7 @@ def fetch_wikicfp() -> list[dict]:
             "timezone": DEFAULT_TIMEZONE,
             "date": "",
             "place": "",
-            "sub": DEFAULT_SUB,
+            "sub": [DEFAULT_SUB],
             "type": "conference",
         })
     return out
@@ -299,6 +303,8 @@ def sort_entries(entries: list[dict]) -> list[dict]:
 
 def canonical_entry(c: dict, *, is_journal: bool = False) -> dict:
     """Turn a canonical dict into a full YAML entry (deadline TBA if not set)."""
+    x = c.get("sub", DEFAULT_SUB)
+    sub_list = [x] if isinstance(x, str) else list(x) if x else [DEFAULT_SUB]
     e = {
         "title": c["title"],
         "hindex": None,
@@ -309,7 +315,7 @@ def canonical_entry(c: dict, *, is_journal: bool = False) -> dict:
         "timezone": DEFAULT_TIMEZONE,
         "date": c.get("date", ""),
         "place": c.get("place", ""),
-        "sub": c.get("sub", DEFAULT_SUB),
+        "sub": sub_list,
         "type": "journal" if is_journal else "conference",
     }
     if is_journal:
@@ -335,6 +341,10 @@ def ensure_canonical(merged: list[dict]) -> list[dict]:
             entry = canonical_entry(c, is_journal=True)
             out.append(entry)
             by_link[link] = entry
+    journal_links = {c["link"] for c in CANONICAL_JOURNALS}
+    for e in out:
+        if e.get("link") in journal_links:
+            e["type"] = "journal"
     return out
 
 

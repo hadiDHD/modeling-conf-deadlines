@@ -9,9 +9,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: Simulation Modelling Practice and Theory
   hindex: null
   year: 2026
@@ -21,9 +22,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: SSBSE
   hindex: null
   year: 2026
@@ -33,7 +35,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: SLE
   hindex: null
@@ -44,7 +47,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: POEM
   hindex: null
@@ -55,7 +59,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: MoDELSWARD
   hindex: null
@@ -66,7 +71,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: MODELS Workshops
   hindex: null
@@ -77,7 +83,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: MODELS
   hindex: null
@@ -88,7 +95,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: Journal of Systems and Software
   hindex: null
@@ -99,9 +107,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: Journal of Object Technology
   hindex: null
   year: 2026
@@ -111,9 +120,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: IEEE TSE
   hindex: null
   year: 2026
@@ -123,9 +133,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: ICSE
   hindex: null
   year: 2026
@@ -135,7 +146,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: FASE
   hindex: null
@@ -146,7 +158,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: Empirical Software Engineering
   hindex: null
@@ -157,9 +170,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: ER
   hindex: null
   year: 2026
@@ -169,7 +183,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: DB
+  sub:
+  - DB
   type: conference
 - title: ECMFA
   hindex: null
@@ -180,7 +195,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ASE
   hindex: null
@@ -191,7 +207,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ANNSIM
   hindex: null
@@ -202,7 +219,8 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ACM TOSEM
   hindex: null
@@ -213,9 +231,10 @@
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
-  sub: SE
+  sub:
+  - SE
   note: Rolling submission
-  type: conference
+  type: journal
 - title: Engineering Digital Twins conference (EDTconf)
   hindex: null
   year: 2025
@@ -225,7 +244,8 @@
   timezone: AoE (UTC-12h)
   date: October 6-7, 2025
   place: Grand Rapids, Michigan, US and hybrid
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ER
   hindex: null
@@ -236,7 +256,8 @@
   timezone: AoE (UTC-12h)
   date: October 20-23, 2025
   place: Poitiers / Futuroscope, France
-  sub: DB
+  sub:
+  - DB
   note: Multiple Deadlines
   type: conference
 - title: MODELS
@@ -248,7 +269,8 @@
   timezone: AoE (UTC-12h)
   date: October 5-10, 2025
   place: Michigan, Ann Arbor, USA
-  sub: SE
+  sub:
+  - SE
   note: Multiple Deadlines
   type: conference
 - title: ECMFA
@@ -260,7 +282,8 @@
   timezone: AoE (UTC-12h)
   date: June 10-13, 2024
   place: Koblenz, Germany
-  sub: SE
+  sub:
+  - SE
   note: Second Submission round
   type: conference
 - title: ICSE
@@ -272,7 +295,8 @@
   timezone: AoE (UTC-12h)
   date: April 26-May 4, 2025
   place: Ottawa, Ontario, Canada
-  sub: SE
+  sub:
+  - SE
   note: Multiple Deadlines
   type: conference
 - title: Engineering Digital Twins conference (EDTconf)
@@ -284,7 +308,8 @@
   timezone: AoE (UTC-12h)
   date: September 23-24, 2024
   place: Linz, Austria
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ASE
   hindex: null
@@ -295,7 +320,8 @@
   timezone: AoE (UTC-12h)
   date: October 27-November 1, 2024
   place: Sacramento, California, United States
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ER
   hindex: null
@@ -306,7 +332,8 @@
   timezone: AoE (UTC-12h)
   date: October 28-31, 2024
   place: Carnegie Mellon University, Pittsburgh, USA
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: MODELS
   hindex: null
@@ -317,7 +344,8 @@
   timezone: AoE (UTC-12h)
   date: September 22-27, 2024
   place: Linz, Austria
-  sub: SE
+  sub:
+  - SE
   note: Multiple Deadlines
   type: conference
 - title: ICSE
@@ -329,7 +357,8 @@
   timezone: AoE (UTC-12h)
   date: April 26-May 4, 2025
   place: Ottawa, Ontario, Canada
-  sub: SE
+  sub:
+  - SE
   note: Multiple Deadlines
   type: conference
 - title: ECMFA
@@ -341,7 +370,8 @@
   timezone: AoE (UTC-12h)
   date: July 8-12, 2024
   place: Enschede, Netherlands
-  sub: SE
+  sub:
+  - SE
   note: Multiple Deadlines
   type: conference
 - title: RE
@@ -353,7 +383,8 @@
   timezone: AoE (UTC-12h)
   date: June 24-28, 2024
   place: Reykjavík, Iceland
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: SPLASH
   hindex: null
@@ -364,7 +395,8 @@
   timezone: AoE (UTC-12h)
   date: October 20-25, 2024
   place: Pasadena, California, United States
-  sub: PL
+  sub:
+  - PL
   note: Multiple Deadlines
   type: conference
 - title: Modellierung
@@ -376,7 +408,8 @@
   timezone: AoE (UTC-12h)
   date: March 12-15, 2024
   place: Potsdam, Germany
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: FSE
   hindex: null
@@ -387,7 +420,8 @@
   timezone: AoE (UTC-12h)
   date: July 15-19, 2024
   place: Porto de Galinhas, Brazil, Brazil
-  sub: SE
+  sub:
+  - SE
   type: conference
 - title: ICSE
   hindex: null
@@ -398,5 +432,6 @@
   timezone: AoE (UTC-12h)
   date: April 14-20, 2024
   place: Portugal, Lisbon
-  sub: SE
+  sub:
+  - SE
   type: conference
