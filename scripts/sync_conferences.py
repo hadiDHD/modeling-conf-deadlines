@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """
 Sync _data/conferences.yml from upstream (already merged by workflow) with
-Researchr API and optionally WikiCFP RSS. Idempotent; only adds/updates.
+Researchr API, Researchr dates pages (scraped), and optionally WikiCFP RSS.
+Idempotent; only adds/updates. No hardcoded deadlines.
 """
 from __future__ import annotations
 
 import re
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
@@ -18,8 +19,11 @@ import yaml
 DATA_DIR = Path(__file__).resolve().parent.parent
 CONF_FILE = DATA_DIR / "_data" / "conferences.yml"
 
-# Researchr API base
+# Researchr API and dates pages
 RESEARCHR_API = "https://researchr.org/api/search/conference"
+RESEARCHR_DATES_BASE = "https://conf.researchr.org/dates"
+RESEARCHR_HOME_PREFIX = "https://conf.researchr.org/home/"
+RESEARCHR_TRACK_PREFIX = "https://conf.researchr.org/track/"
 
 # Conference series to query (search terms). Order doesn't matter; we merge by link.
 RESEARCHR_SERIES = [
@@ -38,7 +42,7 @@ ACRONYM_SUB = {
 }
 
 # Consider submission deadlines from this year through two years ahead
-CURRENT_YEAR = datetime.utcnow().year
+CURRENT_YEAR = datetime.now(timezone.utc).year
 YEAR_MIN = CURRENT_YEAR
 YEAR_MAX = CURRENT_YEAR + 2
 
@@ -48,7 +52,7 @@ YEAR_MAX = CURRENT_YEAR + 2
 CANONICAL_CONFERENCES = [
     {"title": "MODELS", "id": "models2026", "link": "https://conf.researchr.org/home/models-2026", "year": 2026, "sub": "SE"},
     {"title": "MODELS Workshops", "id": "models-workshops2026", "link": "https://conf.researchr.org/track/models-2026/models-2026-workshops", "year": 2026, "sub": "SE"},
-    {"title": "ECMFA", "id": "ecmfa2026", "link": "https://www.ecmfa.org/", "year": 2026, "sub": "SE"},
+    {"title": "ECMFA", "id": "ecmfa2026", "link": "https://conf.researchr.org/track/ecmfa-2026/ecmfa-2026", "year": 2026, "sub": "SE"},
     {"title": "SLE", "id": "sle2026", "link": "https://conf.researchr.org/home/sle-2026", "year": 2026, "sub": "SE"},
     {"title": "ER", "id": "er2026", "link": "https://er2026.org", "year": 2026, "sub": "DB"},
     {"title": "POEM", "id": "poem2026", "link": "https://poem-conference.org", "year": 2026, "sub": "SE"},
@@ -56,8 +60,8 @@ CANONICAL_CONFERENCES = [
     {"title": "ASE", "id": "ase2026", "link": "https://conf.researchr.org/home/ase-2026", "year": 2026, "sub": "SE"},
     {"title": "SSBSE", "id": "ssbse2026", "link": "https://conf.researchr.org/home/ssbse-2026", "year": 2026, "sub": "SE"},
     {"title": "ANNSIM", "id": "annsim2026", "link": "https://scs.org/annsim/", "year": 2026, "sub": "SE"},
-    {"title": "MoDELSWARD", "id": "modelsward2026", "link": "https://modelsward.scitevents.org", "year": 2026, "sub": "SE"},
-    {"title": "FASE", "id": "fase2026", "link": "https://etaps.org/events/fase", "year": 2026, "sub": "SE"},
+    {"title": "MoDELSWARD", "id": "modelsward2026", "link": "https://modelsward.scitevents.org/", "year": 2026, "sub": "SE"},
+    {"title": "FASE", "id": "fase2026", "link": "https://etaps.org/2026/cfp/", "year": 2026, "sub": "SE"},
 ]
 CANONICAL_JOURNALS = [
     {"title": "Software and Systems Modeling (SoSyM)", "id": "sosym", "link": "https://www.springer.com/journal/10270", "year": 2026, "sub": "SE"},
@@ -110,6 +114,278 @@ def extract_year(s: str | None) -> int | None:
         return None
     m = re.match(r"(\d{4})", s)
     return int(m.group(1)) if m else None
+
+
+# Month name to number for parsing Researchr dates (e.g. "Fri 27 Mar 2026")
+_MONTHS = {
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+    "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12,
+}
+
+
+def researchr_slug_from_link(link: str) -> str | None:
+    """Extract conference slug from a Researchr URL for use with /dates/{slug}."""
+    if not link:
+        return None
+    link = link.rstrip("/")
+    if link.startswith(RESEARCHR_HOME_PREFIX):
+        return link[len(RESEARCHR_HOME_PREFIX) :]
+    if link.startswith(RESEARCHR_TRACK_PREFIX):
+        # e.g. .../track/models-2026/models-2026-workshops -> models-2026
+        rest = link[len(RESEARCHR_TRACK_PREFIX) :]
+        return rest.split("/")[0] if "/" in rest else rest
+    return None
+
+
+def fetch_deadline_from_researchr_dates(slug: str) -> str | None:
+    """
+    Fetch conf.researchr.org/dates/{slug} and parse the main submission deadline
+    (Paper Submission preferred, then Abstract Submission, then generic
+    Submission Deadline). Returns 'YYYY-MM-DD 23:59:59' or None on failure.
+    Uses the primary deadline even if it is in the past, so the site can show
+    the date (e.g. "Mar 6, 2026" or "passed") instead of TBA.
+    """
+    url = f"{RESEARCHR_DATES_BASE}/{slug}"
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "ConferenceSync/1.0 (https://github.com/hadiDHD/modeling-conf-deadlines)"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            html = resp.read().decode("utf-8", errors="replace")
+    except Exception:
+        return None
+    # Parse table rows: <tr>...<td>date</td><td>track</td><td>what</td>...
+    rows = re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.DOTALL | re.IGNORECASE)
+    candidates = []  # (date_str, priority); lower priority = prefer first
+    for row in rows:
+        cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL | re.IGNORECASE)
+        if len(cells) < 3:
+            continue
+        date_raw = re.sub(r"<[^>]+>", "", cells[0]).strip()
+        what_raw = re.sub(r"<[^>]+>", "", cells[2]).strip().lower()
+        # Prefer Paper Submission, then Abstract Submission, then generic Submission Deadline
+        if "paper submission" in what_raw:
+            candidates.append((date_raw, 0))
+        elif "abstract submission" in what_raw:
+            candidates.append((date_raw, 1))
+        elif "submission deadline" in what_raw:
+            candidates.append((date_raw, 2))
+    if not candidates:
+        return None
+
+    def parse_date(s: str) -> tuple[int, int, int] | None:
+        # Support ranges like "Mon 20 Oct - Mon 3 Nov 2025" via search
+        m = re.search(r"\w+\s+(\d{1,2})\s+(\w{3})\s+(\d{4})", s.strip())
+        if not m:
+            return None
+        day, mon, year = int(m.group(1)), m.group(2).lower()[:3], int(m.group(3))
+        month = _MONTHS.get(mon)
+        if not month:
+            return None
+        return (year, month, day)
+
+    # Sort by priority (paper first), then by date (earliest first)
+    def key(c: tuple[str, int]):
+        prio = c[1]
+        parsed = parse_date(c[0])
+        return (prio, parsed if parsed else (9999, 99, 99))
+
+    candidates.sort(key=key)
+    # Return the primary deadline (first after sort), even if in the past
+    date_str = candidates[0][0]
+    parsed = parse_date(date_str)
+    if not parsed:
+        return None
+    year, month, day = parsed
+    return f"{year}-{month:02d}-{day:02d} 23:59:59"
+
+
+# --- Non-Researchr conference deadline fetchers (timeout 10s) ---
+FETCH_TIMEOUT = 10
+_USER_AGENT = "ConferenceSync/1.0 (https://github.com/hadiDHD/modeling-conf-deadlines)"
+
+
+def _fetch_html(url: str) -> str | None:
+    """Fetch URL and return decoded HTML or None. Uses FETCH_TIMEOUT."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT})
+        with urllib.request.urlopen(req, timeout=FETCH_TIMEOUT) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+    except Exception:
+        return None
+
+
+def _parse_deadline_from_text(html: str) -> str | None:
+    """
+    Parse HTML/text for a submission deadline. Prefer dates near 'paper submission',
+    'abstract submission', or 'deadline'. Returns 'YYYY-MM-DD 23:59:59' or None.
+    """
+    text = re.sub(r"<[^>]+>", " ", html).replace("&nbsp;", " ")
+    # Normalize whitespace and lower for context
+    text_lower = " ".join(text.split()).lower()
+    candidates = []  # (y, m, d, score); higher score = better context
+    # YYYY-MM-DD
+    for m in re.finditer(r"(\d{4})-(\d{2})-(\d{2})", text):
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if 2020 <= y <= 2030 and 1 <= mo <= 12 and 1 <= d <= 31:
+            start = max(0, m.start() - 80)
+            end = min(len(text_lower), m.end() + 80)
+            ctx = text_lower[start:end]
+            score = 0
+            if "paper submission" in ctx or "submission deadline" in ctx:
+                score = 2
+            elif "abstract submission" in ctx or "deadline" in ctx:
+                score = 1
+            candidates.append((y, mo, d, score))
+    # Month DD, YYYY or DD Month YYYY (capture month for DD Month YYYY)
+    months_pat = r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)"
+    months_cap = r"(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)"
+    for m in re.finditer(rf"{months_pat}\s+(\d{{1,2}}),?\s+(\d{{4}})", text_lower):
+        parts = m.group(0).split()
+        if len(parts) < 3:
+            continue
+        mon_str, day_str, year_str = parts[0], parts[1].replace(",", ""), parts[2]
+        month = _MONTHS.get(mon_str[:3])
+        if not month:
+            continue
+        try:
+            day, year = int(day_str), int(year_str)
+        except ValueError:
+            continue
+        if 2020 <= year <= 2030 and 1 <= day <= 31:
+            start = max(0, m.start() - 80)
+            end = min(len(text_lower), m.end() + 80)
+            ctx = text_lower[start:end]
+            score = 0
+            if "paper submission" in ctx or "submission deadline" in ctx:
+                score = 2
+            elif "abstract submission" in ctx or "deadline" in ctx:
+                score = 1
+            candidates.append((year, month, day, score))
+    for m in re.finditer(rf"(\d{{1,2}})\s+{months_cap}\s+(\d{{4}})", text_lower):
+        day, year = int(m.group(1)), int(m.group(3))
+        mon_str = m.group(2)
+        month = _MONTHS.get(mon_str[:3])
+        if not month:
+            continue
+        if 2020 <= year <= 2030 and 1 <= day <= 31:
+            start = max(0, m.start() - 80)
+            end = min(len(text_lower), m.end() + 80)
+            ctx = text_lower[start:end]
+            score = 0
+            if "paper submission" in ctx or "submission deadline" in ctx:
+                score = 2
+            elif "abstract submission" in ctx or "deadline" in ctx:
+                score = 1
+            candidates.append((year, month, day, score))
+    if not candidates:
+        return None
+    # Prefer higher score, then earliest date
+    candidates.sort(key=lambda c: (-c[3], c[0], c[1], c[2]))
+    y, mo, d = candidates[0][0], candidates[0][1], candidates[0][2]
+    try:
+        datetime(y, mo, d)
+        return f"{y}-{mo:02d}-{d:02d} 23:59:59"
+    except ValueError:
+        return None
+
+
+def fetch_deadline_poem() -> str | None:
+    """POEM: poem-conference.org. Try main page and common CFP/dates paths."""
+    for path in ["", "/cfp", "/dates", "/2026"]:
+        url = "https://poem-conference.org" + path
+        html = _fetch_html(url)
+        if html and ("deadline" in html.lower() or "submission" in html.lower() or "2026" in html):
+            dl = _parse_deadline_from_text(html)
+            if dl:
+                return dl
+    return None
+
+
+def fetch_deadline_modelsward() -> str | None:
+    """MoDELSWARD: modelsward.scitevents.org."""
+    for path in ["", "/ImportantDates.aspx", "/Dates.aspx", "/CFP.aspx"]:
+        url = "https://modelsward.scitevents.org" + path
+        html = _fetch_html(url)
+        if html:
+            dl = _parse_deadline_from_text(html)
+            if dl:
+                return dl
+    return None
+
+
+def fetch_deadline_fase() -> str | None:
+    """FASE (ETAPS): etaps.org. FASE is part of ETAPS; check current year page."""
+    url = "https://etaps.org/2026/"
+    html = _fetch_html(url)
+    if not html:
+        return None
+    # ETAPS page may list FASE; look for submission/deadline and a date
+    dl = _parse_deadline_from_text(html)
+    if dl:
+        return dl
+    # Try FASE-specific link if present
+    for m in re.finditer(r'href="([^"]*fase[^"]*)"', html, re.I):
+        u = m.group(1)
+        if u.startswith("http"):
+            next_url = u
+        else:
+            next_url = "https://etaps.org" + (u if u.startswith("/") else "/" + u)
+        h2 = _fetch_html(next_url)
+        if h2:
+            dl = _parse_deadline_from_text(h2)
+            if dl:
+                return dl
+    return None
+
+
+def fetch_deadline_er() -> str | None:
+    """ER: er2026.org."""
+    html = _fetch_html("https://er2026.org")
+    if html:
+        return _parse_deadline_from_text(html)
+    return None
+
+
+def fetch_deadline_ecmfa() -> str | None:
+    """ECMFA: ecmfa.org."""
+    html = _fetch_html("https://www.ecmfa.org/")
+    if not html:
+        html = _fetch_html("https://ecmfa.org/")
+    if html:
+        return _parse_deadline_from_text(html)
+    return None
+
+
+def fetch_deadline_annsim() -> str | None:
+    """ANNSIM: scs.org/annsim. Page states e.g. 'Paper Submission Deadline: January 25, 2026'."""
+    html = _fetch_html("https://scs.org/annsim/")
+    if html:
+        return _parse_deadline_from_text(html)
+    return None
+
+
+# Map link domain (or path) to fetcher for TBA conferences
+_NON_RESEARCHR_FETCHERS: list[tuple[str, callable]] = [
+    ("poem-conference.org", fetch_deadline_poem),
+    ("modelsward.scitevents.org", fetch_deadline_modelsward),
+    ("etaps.org", fetch_deadline_fase),
+    ("er2026.org", fetch_deadline_er),
+    ("ecmfa.org", fetch_deadline_ecmfa),
+    ("scs.org/annsim", fetch_deadline_annsim),
+]
+
+
+def fetch_deadline_from_non_researchr(link: str) -> str | None:
+    """If link matches a known non-Researchr domain, run its fetcher and return deadline or None."""
+    if not link:
+        return None
+    link_lower = link.lower().rstrip("/")
+    for domain, fetcher in _NON_RESEARCHR_FETCHERS:
+        if domain in link_lower:
+            try:
+                return fetcher()
+            except Exception:
+                pass
+    return None
 
 
 def fetch_researchr(term: str) -> list[dict]:
@@ -217,10 +493,12 @@ def merge_researchr(existing: list[dict], api_entries: list[dict]) -> list[dict]
         )
         if match:
             used_api_links.add(link)
-            e["deadline"] = match.get("deadline", e["deadline"])
-            e["date"] = match.get("date") or e.get("date")
-            e["place"] = match.get("place") or e.get("place")
-            e["year"] = match.get("year", e.get("year"))
+            # Do not overwrite journal entries with API data (API is conference-only)
+            if e.get("type") != "journal":
+                e["deadline"] = match.get("deadline", e["deadline"])
+                e["date"] = match.get("date") or e.get("date")
+                e["place"] = match.get("place") or e.get("place")
+                e["year"] = match.get("year", e.get("year"))
         result.append(e)
     for api_e in api_entries:
         link = api_e.get("link")
@@ -242,7 +520,9 @@ def fetch_wikicfp() -> list[dict]:
         return []
     root = tree.getroot()
     # Handle both RSS 2.0 and namespace
-    channel = root.find("channel") or root.find("{http://purl.org/rss/1.0/}channel") or root
+    channel = root.find("channel") or root.find("{http://purl.org/rss/1.0/}channel")
+    if channel is None:
+        channel = root
     items = channel.findall("item") or channel.findall("{http://purl.org/rss/1.0/}item") or []
     out = []
     for item in items[:50]:
@@ -326,15 +606,29 @@ def canonical_entry(c: dict, *, is_journal: bool = False) -> dict:
 
 
 def ensure_canonical(merged: list[dict]) -> list[dict]:
-    """Ensure every canonical conference and journal appears. Add with TBA if missing."""
+    """Ensure every canonical conference and journal appears. Add with TBA if missing.
+    If an entry with the same id already exists, update its link (and canonical fields)
+    so that corrected canonical links (e.g. Researchr track URL) replace old ones."""
     by_link = {e.get("link"): e for e in merged}
+    by_id = {e.get("id"): e for e in merged}
     out = list(merged)
     for c in CANONICAL_CONFERENCES:
         link = c["link"]
-        if link not in by_link:
+        cid = c.get("id")
+        existing = by_id.get(cid) if cid else None
+        if existing and existing.get("link") != link:
+            # Same conference, link changed (e.g. ecmfa.org -> Researchr track): update in place
+            old_link = existing.get("link")
+            existing["link"] = link
+            if old_link and old_link in by_link:
+                del by_link[old_link]
+            by_link[link] = existing
+        elif link not in by_link:
             entry = canonical_entry(c)
             out.append(entry)
             by_link[link] = entry
+            if c.get("id"):
+                by_id[c["id"]] = entry
     for c in CANONICAL_JOURNALS:
         link = c["link"]
         if link not in by_link:
@@ -345,6 +639,9 @@ def ensure_canonical(merged: list[dict]) -> list[dict]:
     for e in out:
         if e.get("link") in journal_links:
             e["type"] = "journal"
+            # Ensure journals show Rolling submission; do not overwrite deadline with non-journal data
+            if not e.get("note"):
+                e["note"] = "Rolling submission"
     return out
 
 
@@ -370,6 +667,38 @@ def main() -> None:
     for e in merged:
         if e.get("type") not in ("conference", "journal"):
             e["type"] = "conference"
+
+    # Fill TBA deadlines from Researchr dates pages (no hardcoded list)
+    slug_deadline_cache: dict[str, str | None] = {}
+    for e in merged:
+        if e.get("type") != "conference":
+            continue
+        if (e.get("deadline") or "").strip() != "TBA":
+            continue
+        link = e.get("link")
+        slug = researchr_slug_from_link(link) if link else None
+        if not slug:
+            continue
+        if slug not in slug_deadline_cache:
+            slug_deadline_cache[slug] = fetch_deadline_from_researchr_dates(slug)
+        deadline = slug_deadline_cache[slug]
+        if deadline:
+            e["deadline"] = deadline
+
+    # Fill remaining TBA conferences from non-Researchr sites (per-domain fetchers)
+    for e in merged:
+        if e.get("type") != "conference":
+            continue
+        if (e.get("deadline") or "").strip() != "TBA":
+            continue
+        link = e.get("link")
+        try:
+            deadline = fetch_deadline_from_non_researchr(link)
+            if deadline:
+                e["deadline"] = deadline
+        except Exception:
+            pass  # do not fail the whole sync if one fetch fails
+
     merged = sort_entries(merged)
     save_entries(merged)
 
