@@ -1,29 +1,36 @@
-## Modeling Conference Deadlines
+# Modeling Conference Deadlines
 
-Countdown timers to keep track of conference deadlines with a focus on modeling software, data, and processes.
-Access: [here](https://judithmichael.github.io/modeling-conf-deadlines)
+Countdown timers for **modeling, software engineering, and conceptual modeling** conference deadlines — with a focus on venues relevant to **CLEM** (Computational Live Exploratory Modeling).
+
+**Live site:** [hadiDHD.github.io/modeling-conf-deadlines](https://hadiDHD.github.io/modeling-conf-deadlines)
+
+## Auto-sync
+
+This fork automatically updates `_data/conferences.yml`:
+
+- **Daily** sync from upstream [judithmichael/modeling-conf-deadlines](https://github.com/judithmichael/modeling-conf-deadlines)
+- **Researchr API** — deadlines for MODELS, ECMFA, SLE, ER, POEM, ICSE, ASE, SSBSE, FASE, MoDELSWARD, ANNSIM, and others
+- **Optional** [WikiCFP](http://www.wikicfp.com/) RSS for software-engineering CFPs
+
+Runs on [GitHub Actions](.github/workflows/sync-deadlines.yml) (schedule + manual trigger). No crawlers; public repo = free.
 
 ## Contributing
 
-[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/0)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/0)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/1)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/1)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/2)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/2)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/3)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/3)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/4)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/4)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/5)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/5)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/6)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/6)[![](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/images/7)](https://sourcerer.io/fame/abhshkdz/abhshkdz/ai-deadlines/links/7)
+Contributions are welcome.
 
-Contributions are very welcome!
+To add or update a deadline manually:
 
-To add or update a deadline:
-- Fork the repository
-- Update `_data/conferences.yml`
-- Make sure it has the `title`, `year`, `id`, `link`, `deadline`, `timezone`, `date`, `place`, `sub` attributes
-    + See available timezone strings [here](https://momentjs.com/timezone/).
-- Optionally add a `note` and `abstract_deadline` in case the conference has a separate mandatory abstract deadline
-- Send a pull request
+1. Edit `_data/conferences.yml`
+2. Use the fields: `title`, `year`, `id`, `link`, `deadline`, `timezone`, `date`, `place`, `sub`
+   - Timezone strings: [momentjs.com/timezone](https://momentjs.com/timezone/)
+3. Optionally add `note` and `abstract_deadline` for separate abstract deadlines
+4. Open a pull request
 
-## Forks & other useful listings
+## Upstream & forks
 
-- [PL/SE deadlines][2] by @MadhuNimmo
+- **Upstream:** [judithmichael/modeling-conf-deadlines](https://github.com/judithmichael/modeling-conf-deadlines)
+- [PL/SE deadlines](https://madhunimmo.github.io/plse-deadlines?sub=SE,PL) by @MadhuNimmo
 
 ## License
 
-[MIT][1]
-
-[1]: https://abhshkdz.mit-license.org/
-[2]: https://madhunimmo.github.io/plse-deadlines?sub=SE,PL
+[MIT](LICENSE)

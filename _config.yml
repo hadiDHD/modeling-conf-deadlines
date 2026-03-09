@@ -1,12 +1,12 @@
-title: Modeling Conference Deadlines # (Maintained by @judithmichael)
+title: Modeling Conference Deadlines
 
-description: Countdowns to conference deadlines with modeling focus
-author: Judith Michael (forked from @madhunimmo who forked from @abhshkdz)
+description: Countdowns to conference deadlines with modeling focus (CLEM-relevant venues). Auto-synced from upstream and Researchr.
+author: hadiDHD (fork of judithmichael/modeling-conf-deadlines)
 domain: ""
-baseurl: "https://judithmichael.github.io/modeling-conf-deadlines/"
+baseurl: "https://hadiDHD.github.io/modeling-conf-deadlines/"
 
-twitter_username: JudithMichael_
-github_username: judithmichael
+twitter_username:
+github_username: hadiDHD
 github_repo: modeling-conf-deadlines 
 
 markdown: kramdown
