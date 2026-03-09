@@ -1,0 +1,46 @@
+# Sync conference deadlines: upstream + Researchr API (optional WikiCFP RSS)
+# Runs on schedule and manually. Public repo = free unlimited Actions minutes.
+name: Sync conference deadlines
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # Daily at 12:00 UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Sync from upstream
+        run: |
+          git remote add upstream https://github.com/judithmichael/modeling-conf-deadlines.git 2>/dev/null || true
+          git fetch upstream main
+          git merge upstream/main --no-edit
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Sync conferences (Researchr + optional WikiCFP)
+        run: python scripts/sync_conferences.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet _data/conferences.yml && echo "No changes" || {
+            git add _data/conferences.yml
+            git commit -m "Sync: upstream + Researchr $(date -u +%Y-%m-%d)"
+            git push
+          }
