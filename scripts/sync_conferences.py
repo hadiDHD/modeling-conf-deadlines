@@ -136,12 +136,22 @@ def researchr_to_entry(c: dict) -> dict | None:
     }
 
 
+def _normalize_yaml_list(content: str) -> str:
+    """Fix upstream YAML where some list items have '  - ' instead of '- ' (parser error)."""
+    return re.sub(r"\n  - ", r"\n- ", content)
+
+
 def load_existing() -> list[dict]:
     """Load existing _data/conferences.yml; return list of entries."""
     if not CONF_FILE.exists():
         return []
     with open(CONF_FILE, encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+        raw = f.read()
+    raw = _normalize_yaml_list(raw)
+    try:
+        data = yaml.safe_load(raw)
+    except yaml.YAMLError:
+        return []
     if data is None:
         return []
     return data if isinstance(data, list) else []
