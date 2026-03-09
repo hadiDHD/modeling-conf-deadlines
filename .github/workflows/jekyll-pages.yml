@@ -27,16 +27,11 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7'
-          bundler-cache: false
-
-      - name: Install nokogiri system dependencies
-        run: sudo apt-get update && sudo apt-get install -y libxml2-dev libxslt1-dev
+          ruby-version: '3.1'
+          bundler-cache: true
 
       - name: Install dependencies
-        run: |
-          bundle config build.nokogiri --use-system-libraries
-          bundle install
+        run: bundle install
 
       - name: Build with Jekyll
         run: bundle exec jekyll build --future

@@ -1,4 +1,5 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem "github-pages", group: :jekyll_plugins
-gem 'html-proofer'
+gem "jekyll", "~> 4.3"
+gem "kramdown"
+gem "webrick"  # required for Ruby 3.0+
