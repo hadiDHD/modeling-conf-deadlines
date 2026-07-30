@@ -752,7 +752,7 @@ def sort_entries(entries: list[dict]) -> list[dict]:
         d = e.get("deadline") or ""
         y = e.get("year") or 0
         t = e.get("title") or ""
-        return (d, y, t)
+        return (d if d != "TBA" else "0000", y, t)
     return sorted(entries, key=key, reverse=True)
 
 

@@ -295,7 +295,12 @@
 
         // Sort coming_confs and past_confs
         $("#coming_confs .ConfItem").sort(function (a, b) {
-          return $(b).attr('diff') - $(a).attr('diff');
+          var diffA = $(a).attr('diff');
+          var diffB = $(b).attr('diff');
+          if (diffA === undefined && diffB === undefined) return 0;
+          if (diffA === undefined) return 1;
+          if (diffB === undefined) return -1;
+          return diffB - diffA;
         }).appendTo($("#coming_confs"));
 
         $("#sort-order-checkbox input").on("click", function() {
