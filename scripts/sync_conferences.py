@@ -216,6 +216,10 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
         event_lower = event_name.lower()
         track_norm = norm(track_name)
 
+        # Skip notification, camera-ready, acceptance, responses/rebuttals, etc.
+        if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "author response", "co-located", "proposal"]):
+            continue
+
         if subtrack_target:
             target_norm = norm(subtrack_target)
             conf_acronym = title.split(" - ")[0].split()[0]
@@ -231,9 +235,12 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
                 continue
         else:
             main_keys = ["research track", "research papers", "main track", "technical track"]
-            if track_norm and not any(k in track_name.lower() for k in main_keys) and "track" in track_norm:
-                if any(w in track_name.lower() for w in ["symposium", "workshop", "demo", "doctoral", "artifact", "poster"]):
-                    continue
+            is_main = (
+                any(k in track_name.lower() for k in main_keys) or
+                track_name.lower() == slug.lower().split("-")[0]
+            )
+            if not is_main:
+                continue
 
         if "abstract" in event_lower:
             abstract_candidates.append(dt_str)
@@ -833,11 +840,10 @@ def main() -> None:
         if e.get("type") not in ("conference", "journal"):
             e["type"] = "conference"
 
-    # Fill TBA deadlines from Researchr dates pages (no hardcoded list)
+    # Update deadlines from Researchr dates pages (no hardcoded list).
+    # Since Researchr dates pages are the absolute source of truth, we always want to sync with them.
     for e in merged:
         if e.get("type") != "conference":
-            continue
-        if (e.get("deadline") or "").strip() != "TBA":
             continue
         link = e.get("link")
         slug = researchr_slug_from_link(link) if link else None
@@ -846,8 +852,10 @@ def main() -> None:
         deadline, abstract_deadline = fetch_deadline_from_researchr_dates(slug, title=e.get("title"))
         if deadline:
             e["deadline"] = deadline
-        if abstract_deadline and not e.get("abstract_deadline"):
-            e["abstract_deadline"] = abstract_deadline
+            if abstract_deadline:
+                e["abstract_deadline"] = abstract_deadline
+            else:
+                e.pop("abstract_deadline", None)
 
     # Fill remaining TBA conferences from non-Researchr sites (per-domain fetchers)
     for e in merged:

@@ -513,21 +513,56 @@ def run_crawl_and_update(host: str, port: int, token: str, dry_run: bool = False
                     track_dates, _, _ = process_researchr_dates_page(dates_url, dates_res)
 
                     main_keys = ["Research Track", "Research Papers", "Main Track", "Technical Track"]
-                    main_updated = False
-                    for mk in main_keys:
-                        if mk in track_dates:
-                            if track_dates[mk].get("deadline"):
-                                entry["deadline"] = track_dates[mk]["deadline"]
-                            if track_dates[mk].get("abstract_deadline"):
-                                entry["abstract_deadline"] = track_dates[mk]["abstract_deadline"]
-                            main_updated = True
-                            break
 
-                    if not main_updated and track_dates:
-                        dls = [td["deadline"] for td in track_dates.values() if "deadline" in td]
-                        if dls:
-                            dls.sort()
-                            entry["deadline"] = dls[0]
+                    # If this entry is a subtrack/workshop (determined by " - " in title),
+                    # we should match its specific track in track_dates instead of using the main track.
+                    subtrack_target = None
+                    if " - " in entry.get("title", ""):
+                        conf_base, raw_sub = entry["title"].split(" - ", 1)
+                        subtrack_target = raw_sub.strip()
+
+                    if subtrack_target:
+                        def norm(s: str) -> str:
+                            return re.sub(r"[^a-z0-9]", "", s.lower())
+                        
+                        target_norm = norm(subtrack_target)
+                        matched_trk_info = None
+                        for trk_name, trk_info in track_dates.items():
+                            track_norm = norm(trk_name)
+                            conf_acronym = entry["title"].split(" - ")[0].split()[0]
+                            clean_track_norm = norm(re.sub(rf"^{re.escape(conf_acronym)}", "", trk_name, flags=re.IGNORECASE))
+                            
+                            is_match = (
+                                target_norm in track_norm or
+                                track_norm in target_norm or
+                                (clean_track_norm and clean_track_norm in target_norm) or
+                                (clean_track_norm and target_norm in clean_track_norm)
+                            )
+                            if is_match:
+                                matched_trk_info = trk_info
+                                break
+                        
+                        if matched_trk_info:
+                            if matched_trk_info.get("deadline"):
+                                entry["deadline"] = matched_trk_info["deadline"]
+                            if matched_trk_info.get("abstract_deadline"):
+                                entry["abstract_deadline"] = matched_trk_info["abstract_deadline"]
+                    else:
+                        main_updated = False
+                        for mk in main_keys:
+                            if mk in track_dates:
+                                if track_dates[mk].get("deadline"):
+                                    entry["deadline"] = track_dates[mk]["deadline"]
+                                if track_dates[mk].get("abstract_deadline"):
+                                    entry["abstract_deadline"] = track_dates[mk]["abstract_deadline"]
+                                main_updated = True
+                                break
+
+                        if not main_updated and track_dates:
+                            dls = [td["deadline"] for td in track_dates.values() if "deadline" in td]
+                            if dls:
+                                dls.sort()
+                                entry["deadline"] = dls[0]
 
                     # Extract all non-main tracks / workshops
                     for trk_name, trk_info in track_dates.items():
