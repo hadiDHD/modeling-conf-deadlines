@@ -62,6 +62,7 @@ CANONICAL_CONFERENCES = [
     {"title": "ANNSIM", "id": "annsim2026", "link": "https://scs.org/annsim/", "year": 2026, "sub": "SE"},
     {"title": "MoDELSWARD", "id": "modelsward2026", "link": "https://modelsward.scitevents.org/", "year": 2026, "sub": "SE"},
     {"title": "FASE", "id": "fase2026", "link": "https://etaps.org/2026/cfp/", "year": 2026, "sub": "SE"},
+    {"title": "FSE", "id": "fse2027", "link": "https://conf.researchr.org/home/fse-2027", "year": 2027, "sub": "SE"},
 ]
 CANONICAL_JOURNALS = [
     {"title": "Software and Systems Modeling (SoSyM)", "id": "sosym", "link": "https://www.springer.com/journal/10270", "year": 2026, "sub": "SE"},
