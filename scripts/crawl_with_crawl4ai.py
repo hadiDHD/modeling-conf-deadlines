@@ -286,7 +286,7 @@ def process_researchr_dates_page(
     html = crawl_data.get("cleaned_html", "")
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.DOTALL | re.IGNORECASE)
 
-    track_dates = defaultdict(dict)
+    track_dates = defaultdict(lambda: {"deadlines": [], "abstract_deadlines": []})
     for row in rows:
         cells = [re.sub(r"<[^>]+>", "", c).strip() for c in re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL | re.IGNORECASE)]
         if len(cells) >= 3:
@@ -296,22 +296,30 @@ def process_researchr_dates_page(
                 continue
 
             event_lower = event_name.lower()
-            if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "author response", "co-located", "proposal"]):
+            if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "accepted", "author response", "co-located", "proposal", "emse", "stage 2", "stage ii", "post-conference"]):
                 continue
 
             if "abstract" in event_lower:
-                if "abstract_deadline" not in track_dates[track_name]:
-                    track_dates[track_name]["abstract_deadline"] = parsed_dt
+                track_dates[track_name]["abstract_deadlines"].append(parsed_dt)
             elif any(k in event_lower for k in ["paper submission", "submission deadline", "paper deadline", "submission"]):
-                if "deadline" not in track_dates[track_name]:
-                    track_dates[track_name]["deadline"] = parsed_dt
+                track_dates[track_name]["deadlines"].append(parsed_dt)
 
-    for td in track_dates.values():
+    final_track_dates = {}
+    for track_name, dts in track_dates.items():
+        deadlines = sorted(dts["deadlines"])
+        abstract_deadlines = sorted(dts["abstract_deadlines"])
+        final_track_dates[track_name] = {}
+        if deadlines:
+            final_track_dates[track_name]["deadline"] = deadlines[0]
+        if abstract_deadlines:
+            final_track_dates[track_name]["abstract_deadline"] = abstract_deadlines[0]
+
+    for td in final_track_dates.values():
         if td.get("deadline") and td.get("abstract_deadline") and td["abstract_deadline"] > td["deadline"]:
             print(f"[Warning] Abstract deadline ({td['abstract_deadline']}) > submission deadline ({td['deadline']}) in Researchr track dates. Swapping.")
             td["abstract_deadline"], td["deadline"] = td["deadline"], td["abstract_deadline"]
 
-    return track_dates, None, None
+    return final_track_dates, None, None
 
 
 def clean_track_title(conf_base: str, trk_name: str) -> str | None:

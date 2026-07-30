@@ -131,7 +131,7 @@
   year: 2027
   id: icse-industry-challenge-2027
   link: https://conf.researchr.org/track/icse-2027/icse-2027-industry-challenge
-  deadline: '2026-11-13 23:59:59'
+  deadline: '2026-07-17 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: Dublin, Ireland at the Convention Centre
@@ -325,13 +325,13 @@
   year: 2027
   id: icse-2027
   link: https://conf.researchr.org/home/icse-2027
-  deadline: '2026-10-21 23:59:59'
+  deadline: '2026-06-30 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: Dublin, Ireland at the Convention Centre
   sub: *id001
   type: conference
-  abstract_deadline: '2026-10-16 23:59:59'
+  abstract_deadline: '2026-06-23 23:59:59'
 - title: ER
   hindex: null
   year: 2026
@@ -360,7 +360,7 @@
   year: 2026
   id: icse-msr-registered-reports-2026
   link: https://conf.researchr.org/track/msr-2026/msr-2026-registered-reports
-  deadline: '2026-09-28 23:59:59'
+  deadline: '2025-11-21 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -395,7 +395,7 @@
   year: 2026
   id: models-posters-2026
   link: https://conf.researchr.org/track/models-2026/models-2026-posters
-  deadline: '2026-08-19 23:59:59'
+  deadline: '2026-07-15 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
@@ -598,7 +598,7 @@
   year: 2026
   id: ase2026
   link: https://conf.researchr.org/home/ase-2026
-  deadline: '2026-07-16 23:59:59'
+  deadline: '2026-03-26 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: Munich, Germany during October
@@ -654,7 +654,7 @@
   year: 2026
   id: ase-klee-2026
   link: https://conf.researchr.org/home/ase-2026/klee-2026
-  deadline: '2026-07-10 23:59:59'
+  deadline: '2026-04-24 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: Munich, Germany during October
@@ -777,7 +777,7 @@
   year: 2026
   id: sle2026
   link: https://conf.researchr.org/home/sle-2026
-  deadline: '2026-04-29 23:59:59'
+  deadline: '2026-03-06 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: ''
@@ -790,14 +790,14 @@
   year: 2026
   id: ecmfa2026
   link: https://conf.researchr.org/track/ecmfa-2026/ecmfa-2026
-  deadline: '2026-04-26 23:59:59'
+  deadline: '2025-12-19 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
   place: Rennes, France
   sub:
   - SE
   type: conference
-  abstract_deadline: '2026-02-13 23:59:59'
+  abstract_deadline: '2025-12-07 23:59:59'
 - title: SSBSE - Hot-off-the-Press Track
   hindex: null
   year: 2026
@@ -874,7 +874,7 @@
   year: 2026
   id: icse-brazilian-se-showcase-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-brazilian-software-engineering-showcase
-  deadline: '2026-02-27 23:59:59'
+  deadline: '2026-01-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -907,7 +907,7 @@
   year: 2026
   id: icse-journal-ahead-workshop-jaws-2026
   link: https://conf.researchr.org/home/icse-2026/jaws-2026
-  deadline: '2026-01-25 23:59:59'
+  deadline: '2026-01-16 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1007,7 +1007,7 @@
   year: 2026
   id: icse-seams-research-track-2026
   link: https://conf.researchr.org/track/seams-2026/seams-2026-research-track
-  deadline: '2026-01-05 23:59:59'
+  deadline: '2025-10-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1018,7 +1018,7 @@
   year: 2026
   id: icse-posters-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-posters
-  deadline: '2026-01-05 23:59:59'
+  deadline: '2025-11-18 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1029,19 +1029,19 @@
   year: 2026
   id: icse2026
   link: https://conf.researchr.org/home/icse-2026
-  deadline: '2026-01-05 23:59:59'
+  deadline: '2025-03-14 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
   sub: *id001
   type: conference
-  abstract_deadline: '2025-10-19 23:59:59'
+  abstract_deadline: '2025-03-07 23:59:59'
 - title: ICSE - DeepTest
   hindex: null
   year: 2026
   id: icse-deeptest-2026
   link: https://conf.researchr.org/home/icse-2026/deeptest-2026
-  deadline: '2025-12-31 23:59:59'
+  deadline: '2025-10-27 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1121,7 +1121,7 @@
   year: 2026
   id: icse-workshops-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-workshops
-  deadline: '2025-12-05 23:59:59'
+  deadline: '2025-10-17 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1132,7 +1132,7 @@
   year: 2026
   id: icse-student-mentoring-workshop-smew-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-smew---student-mentoring-workshop
-  deadline: '2025-12-05 23:59:59'
+  deadline: '2025-10-17 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1165,7 +1165,7 @@
   year: 2026
   id: icse-doctoral-symposium-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-doctoral-symposium
-  deadline: '2025-11-18 23:59:59'
+  deadline: '2025-11-14 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1243,7 +1243,7 @@
   year: 2026
   id: icse-industry-challenge-track-2026
   link: https://conf.researchr.org/track/icse-2026/icse-2026-industry-challenge-track
-  deadline: '2025-11-14 23:59:59'
+  deadline: '2025-07-17 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''

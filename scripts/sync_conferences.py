@@ -223,7 +223,7 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
         event_lower = event_name.lower()
 
         # Skip notification, camera-ready, acceptance, responses/rebuttals, etc.
-        if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "author response", "co-located", "proposal"]):
+        if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "accepted", "author response", "co-located", "proposal", "emse", "stage 2", "stage ii", "post-conference"]):
             continue
 
         if subtrack_target:
@@ -250,6 +250,8 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
         elif any(k in event_lower for k in ["paper submission", "submission deadline", "paper deadline", "submission"]):
             paper_candidates.append(dt_str)
 
+    paper_candidates.sort()
+    abstract_candidates.sort()
     deadline = paper_candidates[0] if paper_candidates else None
     abstract_deadline = abstract_candidates[0] if abstract_candidates else None
 
