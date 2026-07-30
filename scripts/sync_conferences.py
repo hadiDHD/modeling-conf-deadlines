@@ -129,7 +129,8 @@ def researchr_slug_from_link(link: str) -> str | None:
         return None
     link = link.rstrip("/")
     if link.startswith(RESEARCHR_HOME_PREFIX):
-        return link[len(RESEARCHR_HOME_PREFIX) :]
+        rest = link[len(RESEARCHR_HOME_PREFIX) :]
+        return rest.split("/")[0] if "/" in rest else rest
     if link.startswith(RESEARCHR_TRACK_PREFIX):
         # e.g. .../track/models-2026/models-2026-workshops -> models-2026
         rest = link[len(RESEARCHR_TRACK_PREFIX) :]
@@ -200,8 +201,13 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
         conf_base, raw_sub = title.split(" - ", 1)
         subtrack_target = raw_sub.strip()
 
-    def norm(s: str) -> str:
-        return re.sub(r"[^a-z0-9]", "", s.lower())
+    def clean_norm(s: str) -> str:
+        if not s:
+            return ""
+        s = s.lower()
+        s = re.sub(r'\b(?:icse|ase|models|sle|ecmfa|er|fse|issta|sosp|osdi|asplos|pldi|popl|oopsla|splash)\b', '', s)
+        s = re.sub(r'\b\d{4}\b', '', s)
+        return re.sub(r'[^a-z0-9]', '', s)
 
     paper_candidates = []
     abstract_candidates = []
@@ -214,22 +220,18 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
         dt_str = f"{y}-{m:02d}-{d:02d} 23:59:59"
         
         event_lower = event_name.lower()
-        track_norm = norm(track_name)
 
         # Skip notification, camera-ready, acceptance, responses/rebuttals, etc.
         if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "author response", "co-located", "proposal"]):
             continue
 
         if subtrack_target:
-            target_norm = norm(subtrack_target)
-            conf_acronym = title.split(" - ")[0].split()[0]
-            clean_track_norm = norm(re.sub(rf"^{re.escape(conf_acronym)}", "", track_name, flags=re.IGNORECASE))
-            
+            target_cn = clean_norm(subtrack_target)
+            track_cn = clean_norm(track_name)
             is_match = (
-                target_norm in track_norm or
-                track_norm in target_norm or
-                (clean_track_norm and clean_track_norm in target_norm) or
-                (clean_track_norm and target_norm in clean_track_norm)
+                target_cn == track_cn or
+                (target_cn in track_cn and len(target_cn) >= 5) or
+                (track_cn in target_cn and len(track_cn) >= 5)
             )
             if not is_match:
                 continue
@@ -237,7 +239,7 @@ def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> 
             main_keys = ["research track", "research papers", "main track", "technical track"]
             is_main = (
                 any(k in track_name.lower() for k in main_keys) or
-                track_name.lower() == slug.lower().split("-")[0]
+                clean_norm(track_name) == clean_norm(slug)
             )
             if not is_main:
                 continue

@@ -296,6 +296,9 @@ def process_researchr_dates_page(
                 continue
 
             event_lower = event_name.lower()
+            if any(k in event_lower for k in ["camera ready", "camera-ready", "notification", "response", "rebuttal", "acceptance", "author response", "co-located", "proposal"]):
+                continue
+
             if "abstract" in event_lower:
                 if "abstract_deadline" not in track_dates[track_name]:
                     track_dates[track_name]["abstract_deadline"] = parsed_dt
@@ -521,22 +524,23 @@ def run_crawl_and_update(host: str, port: int, token: str, dry_run: bool = False
                         conf_base, raw_sub = entry["title"].split(" - ", 1)
                         subtrack_target = raw_sub.strip()
 
+                    def clean_norm(s: str) -> str:
+                        if not s:
+                            return ""
+                        s = s.lower()
+                        s = re.sub(r'\b(?:icse|ase|models|sle|ecmfa|er|fse|issta|sosp|osdi|asplos|pldi|popl|oopsla|splash)\b', '', s)
+                        s = re.sub(r'\b\d{4}\b', '', s)
+                        return re.sub(r'[^a-z0-9]', '', s)
+
                     if subtrack_target:
-                        def norm(s: str) -> str:
-                            return re.sub(r"[^a-z0-9]", "", s.lower())
-                        
-                        target_norm = norm(subtrack_target)
+                        target_cn = clean_norm(subtrack_target)
                         matched_trk_info = None
                         for trk_name, trk_info in track_dates.items():
-                            track_norm = norm(trk_name)
-                            conf_acronym = entry["title"].split(" - ")[0].split()[0]
-                            clean_track_norm = norm(re.sub(rf"^{re.escape(conf_acronym)}", "", trk_name, flags=re.IGNORECASE))
-                            
+                            track_cn = clean_norm(trk_name)
                             is_match = (
-                                target_norm in track_norm or
-                                track_norm in target_norm or
-                                (clean_track_norm and clean_track_norm in target_norm) or
-                                (clean_track_norm and target_norm in clean_track_norm)
+                                target_cn == track_cn or
+                                (target_cn in track_cn and len(target_cn) >= 5) or
+                                (track_cn in target_cn and len(track_cn) >= 5)
                             )
                             if is_match:
                                 matched_trk_info = trk_info
@@ -557,6 +561,21 @@ def run_crawl_and_update(host: str, port: int, token: str, dry_run: bool = False
                                     entry["abstract_deadline"] = track_dates[mk]["abstract_deadline"]
                                 main_updated = True
                                 break
+
+                        if not main_updated and track_dates:
+                            # Try to match by slug using clean_norm
+                            matched_by_slug = None
+                            for trk_name, trk_info in track_dates.items():
+                                if clean_norm(trk_name) == clean_norm(slug):
+                                    matched_by_slug = trk_info
+                                    break
+                            
+                            if matched_by_slug:
+                                if matched_by_slug.get("deadline"):
+                                    entry["deadline"] = matched_by_slug["deadline"]
+                                if matched_by_slug.get("abstract_deadline"):
+                                    entry["abstract_deadline"] = matched_by_slug["abstract_deadline"]
+                                main_updated = True
 
                         if not main_updated and track_dates:
                             dls = [td["deadline"] for td in track_dates.values() if "deadline" in td]
