@@ -608,7 +608,7 @@ def run_crawl_and_update(host: str, port: int, token: str, dry_run: bool = False
                                     track_link = href if href.startswith("http") else f"https://conf.researchr.org{href}"
                                     break
 
-                        if not track_link or "povc-2026" in track_link:
+                        if not track_link or ("povc-2026" in track_link and "POVC" not in sub_part.upper()):
                             main_slug = slug
                             trk_slug = slugify(sub_part)
                             track_link = f"https://conf.researchr.org/track/{main_slug}/{main_slug}-{trk_slug}"
