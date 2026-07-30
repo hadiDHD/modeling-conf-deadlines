@@ -33,6 +33,8 @@ def preprocess_liquid_to_jinja(content):
     content = content.replace("\r\n", "\n")
     # Preprocess {% include head.html %} -> {% include 'head.html' %}
     content = re.sub(r"\{\%\s*include\s+([a-zA-Z0-9_\-\.]+)\s*\%\}", r"{% include '\1' %}", content)
+    # Preprocess {% assign x = y %} -> {% set x = y %}
+    content = re.sub(r"\{\%\s*assign\s+([a-zA-Z0-9_]+)\s*=\s*(.*?)\s*\%\}", r"{% set \1 = \2 %}", content)
     # Preprocess prepend:site.baseurl filter
     content = re.sub(r"\{\{\s*\"([^\"]+)\"\s*\|\s*prepend:\s*site\.baseurl\s*\}\}", r"{{ site.baseurl }}\1", content)
     content = re.sub(r"\{\{\s*site\.baseurl\s*\|\s*prepend:\s*site\.baseurl\s*\}\}", r"{{ site.baseurl }}", content)
@@ -57,6 +59,12 @@ def slice_filter(value, start_len):
     except Exception:
         pass
     return str(value)
+
+class PreprocessingFileSystemLoader(jinja2.FileSystemLoader):
+    def get_source(self, environment, template):
+        source, filename, uptodate = super().get_source(environment, template)
+        processed_source = preprocess_liquid_to_jinja(source)
+        return processed_source, filename, uptodate
 
 def main():
     config = load_yaml(REPO_ROOT / "_config.yml") or {}
@@ -90,9 +98,9 @@ def main():
 
     # Setup Jinja2 Environment with loaders
     loader = jinja2.ChoiceLoader([
-        jinja2.FileSystemLoader(str(REPO_ROOT / "_includes")),
-        jinja2.FileSystemLoader(str(REPO_ROOT)),
-        jinja2.FileSystemLoader(str(REPO_ROOT / "_pages"))
+        PreprocessingFileSystemLoader(str(REPO_ROOT / "_includes")),
+        PreprocessingFileSystemLoader(str(REPO_ROOT)),
+        PreprocessingFileSystemLoader(str(REPO_ROOT / "_pages"))
     ])
 
     env = jinja2.Environment(loader=loader, autoescape=False)

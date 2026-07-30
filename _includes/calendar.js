@@ -102,7 +102,7 @@ function load_conference_list() {
     // add Conferences in chosen color
     {% if conf.start %}
       var color = "black";
-      {% set conf_sub = conf.sub[0] if conf.sub is iterable and conf.sub else "" %}
+      {% assign conf_sub = conf.sub[0] %}
       {% for type in site.data.types %}
             {% if conf_sub == type.sub %}
                     color = "{{type.color}}";
