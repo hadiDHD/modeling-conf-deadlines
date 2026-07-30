@@ -17,20 +17,42 @@ function addUtcTimeZones() {
 function update_filtering(data) {
   var page_url = "{{site.baseurl}}";
   store.set("{{site.domain}}-subs", data.subs);
-
-  $(".confItem").hide();
-  for (const j in data.all_subs) {
-    const s = data.all_subs[j];
-    const identifier = "." + s + "-conf";
-    if (data.subs.includes(s)) {
-      $(identifier).show();
-    }
+  if (data.venues) {
+    store.set("{{site.domain}}-venues", data.venues);
   }
 
-  if (subs.length == 0) {
-    window.history.pushState("", "", page_url);
+  var active_venues = data.venues || (typeof venues !== 'undefined' ? venues : []);
+
+  $(".ConfItem").each(function() {
+    var $item = $(this);
+    var matchesSubject = false;
+    for (var i = 0; i < data.subs.length; i++) {
+      if ($item.hasClass(data.subs[i] + "-conf")) {
+        matchesSubject = true;
+        break;
+      }
+    }
+    var itemVenue = $item.attr("data-venue");
+    var matchesVenue = active_venues.includes(itemVenue);
+    if (matchesSubject && matchesVenue) {
+      $item.show();
+    } else {
+      $item.hide();
+    }
+  });
+
+  var urlParams = new URLSearchParams();
+  if (data.subs.length > 0) {
+    urlParams.set("sub", data.subs.join());
+  }
+  if (active_venues.length > 0) {
+    urlParams.set("venue", active_venues.join());
+  }
+  var queryString = urlParams.toString();
+  if (queryString.length > 0) {
+    window.history.pushState("", "", page_url + "/?" + queryString);
   } else {
-    window.history.pushState("", "", page_url + "/?sub=" + data.subs.join());
+    window.history.pushState("", "", page_url);
   }
 }
 
@@ -53,4 +75,72 @@ function createCalendarFromObject(data) {
       duration: 60,
     },
   });
+}
+
+function update_venue_options_from_subjects(subs) {
+  var new_all_venues = [];
+  if ($("#calendar-page").length > 0) {
+    // Calendar Page: use conf_list_all
+    var available_venues_set = new Set();
+    if (typeof conf_list_all !== "undefined") {
+      conf_list_all.forEach(function(v) {
+        var matchesSubject = false;
+        for (var i = 0; i < subs.length; i++) {
+          if (v.subject.indexOf(subs[i]) > -1) {
+            matchesSubject = true;
+            break;
+          }
+        }
+        if (matchesSubject && v.venue) {
+          available_venues_set.add(v.venue);
+        }
+      });
+    }
+    new_all_venues = Array.from(available_venues_set).sort();
+  } else {
+    // Countdown Page: use ConfItem DOM elements
+    var available_venues_set = new Set();
+    $(".ConfItem").each(function() {
+      var $item = $(this);
+      var matchesSubject = false;
+      for (var i = 0; i < subs.length; i++) {
+        if ($item.hasClass(subs[i] + "-conf")) {
+          matchesSubject = true;
+          break;
+        }
+      }
+      if (matchesSubject) {
+        var venue = $item.attr("data-venue");
+        if (venue) {
+          available_venues_set.add(venue);
+        }
+      }
+    });
+    new_all_venues = Array.from(available_venues_set).sort();
+  }
+
+  // If we had all selected before, or if venues is empty/equal to all_venues, select all of the new ones.
+  var had_all_selected = (typeof venues === 'undefined' || typeof all_venues === 'undefined' || venues.length === 0 || all_venues.every(function(v) { return venues.includes(v); }));
+  if (had_all_selected) {
+    venues = new_all_venues.slice();
+  } else {
+    venues = venues.filter(function(v) {
+      return new_all_venues.indexOf(v) > -1;
+    });
+    if (venues.length === 0 && new_all_venues.length > 0) {
+      venues = new_all_venues.slice();
+    }
+  }
+
+  var $venueSelect = $("#venue-select");
+  $venueSelect.empty();
+  new_all_venues.forEach(function(v) {
+    $venueSelect.append('<option value="' + v + '">' + v + '</option>');
+  });
+
+  all_venues = new_all_venues;
+
+  $venueSelect.multiselect('rebuild');
+  $venueSelect.multiselect('deselectAll', false);
+  $venueSelect.multiselect('select', venues);
 }

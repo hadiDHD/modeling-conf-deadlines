@@ -1,6 +1,8 @@
 
 var subs = [];
 var _all_subs = [];
+var venues = [];
+var all_venues = [];
 // Get all subs
 var conf_type_data = {{ site.data.types | jsonify}};
 var sub2name = {}; var name2sub = {};

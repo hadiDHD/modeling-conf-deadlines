@@ -42,6 +42,8 @@ def preprocess_liquid_to_jinja(content):
     content = re.sub(r"\{\{\s*site\.time\s*\|\s*date:\s*'%s'\s*\}\}", r"{{ site.time_epoch }}", content)
     # Preprocess slice: -2, 3 filter -> slice_filter('-2,3')
     content = re.sub(r"\{\{\s*conf\.year\s*\|\s*slice:\s*(-?\d+)\s*,\s*(\d+)\s*\}\}", r"{{ conf.year | slice_filter('\1,\2') }}", content)
+    # Preprocess split: 'x' filter -> split('x')
+    content = re.sub(r"\|\s*split:\s*(['\"][^'\"]+['\"])", r"| split(\1)", content)
     return content
 
 def slice_filter(value, start_len):
@@ -109,6 +111,7 @@ def main():
     env.filters["jsonify"] = lambda v: json.dumps(v)
     env.filters["escape"] = lambda x: str(x).replace('"', '&quot;').replace("'", "&#39;") if x else ""
     env.filters["slice_filter"] = slice_filter
+    env.filters["split"] = lambda s, sep: s.split(sep) if s else []
 
     out_dir = REPO_ROOT / "_site"
     out_dir.mkdir(parents=True, exist_ok=True)

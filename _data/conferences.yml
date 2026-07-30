@@ -78,17 +78,6 @@
   place: ''
   sub: *id001
   type: conference
-- title: ICSE - Demonstrations
-  hindex: null
-  year: 2027
-  id: icse-demonstrations-2027
-  link: https://conf.researchr.org/track/icse-2027/icse-2027-demonstrations
-  deadline: TBA
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: Dublin, Ireland at the Convention Centre
-  sub: *id001
-  type: conference
 - title: ICSE - CAIN Posters
   hindex: null
   year: 2027
@@ -163,11 +152,12 @@
   hindex: null
   year: 2026
   id: poem2026
-  link: https://poem-conference.org
-  deadline: TBA
+  link: https://poem2026.aegean.gr/
+  deadline: '2026-07-27 23:59:59'
   timezone: AoE (UTC-12h)
-  date: ''
-  place: ''
+  date: December 1-3, 2026
+  place: Mytilene, Greece
+  abstract_deadline: '2026-07-20 23:59:59'
   sub:
   - SE
   type: conference
@@ -246,29 +236,7 @@
   hindex: null
   year: 2026
   id: icse-msr-tutorials-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-tutorials
-  deadline: TBA
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-- title: ICSE - Journal First Track
-  hindex: null
-  year: 2026
-  id: icse-journal-first-track-2026
-  link: https://conf.researchr.org/track/seams-2026/seams-2026-journal-first-track
-  deadline: TBA
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-- title: ICSE - Community Debate
-  hindex: null
-  year: 2026
-  id: icse-community-debate-2026
-  link: https://conf.researchr.org/track/seams-2026/seams-2026-community-debate
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-tutorials
   deadline: TBA
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -359,18 +327,6 @@
   place: Dublin, Ireland at the Convention Centre
   sub: *id001
   type: conference
-- title: ICSE - Replications and Negative Results (RENE)
-  hindex: null
-  year: 2027
-  id: icse-replications-and-negative-results-rene-2027
-  link: https://conf.researchr.org/track/icpc-2027/icpc-2027-replications-and-negative-results--rene-
-  deadline: '2026-12-18 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-  abstract_deadline: '2026-12-11 23:59:59'
 - title: ICSE - ICPC Replications and Negative Results (RENE)
   hindex: null
   year: 2027
@@ -406,29 +362,6 @@
   sub: *id001
   type: conference
   abstract_deadline: '2026-11-19 23:59:59'
-- title: ICSE - Early Research Achievements (ERA)
-  hindex: null
-  year: 2027
-  id: icse-early-research-achievements-era-2027
-  link: https://conf.researchr.org/track/icpc-2027/icpc-2027-early-research-achievements--era-
-  deadline: '2026-11-26 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-  abstract_deadline: '2026-11-19 23:59:59'
-- title: ICSE - Tool Demonstration
-  hindex: null
-  year: 2027
-  id: icse-tool-demonstration-2027
-  link: https://conf.researchr.org/track/icpc-2027/icpc-2027-tool-demonstration
-  deadline: '2026-11-19 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
 - title: ICSE - ICPC Tool Demonstration
   hindex: null
   year: 2027
@@ -488,7 +421,7 @@
   hindex: null
   year: 2027
   id: icse-msr-data-and-tool-showcase-track-2027
-  link: https://conf.researchr.org/track/icse-2027/icse-2027-msr-data-and-tool-showcase-track
+  link: https://conf.researchr.org/track/msr-2027/msr-2027-data-and-tool-showcase-track
   deadline: '2026-11-10 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
@@ -635,7 +568,7 @@
   hindex: null
   year: 2027
   id: icse-msr-technical-papers-2027
-  link: https://conf.researchr.org/track/icse-2027/icse-2027-msr-technical-papers
+  link: https://conf.researchr.org/track/msr-2027/msr-2027-technical-papers
   deadline: '2026-10-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
@@ -705,7 +638,7 @@
   hindex: null
   year: 2026
   id: icse-msr-registered-reports-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-registered-reports
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-registered-reports
   deadline: '2026-09-28 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -872,7 +805,7 @@
   hindex: null
   year: 2026
   id: ase-trust-2026
-  link: https://conf.researchr.org/home/ase-2026/rase-2026
+  link: https://conf.researchr.org/home/ase-2026/trust-2026
   deadline: '2026-07-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: ''
@@ -1026,28 +959,6 @@
   sub: *id004
   type: conference
   abstract_deadline: '2026-06-24 23:59:59'
-- title: MODELS - Industrial Talks
-  hindex: null
-  year: 2026
-  id: models-industrial-talks-2026
-  link: https://conf.researchr.org/track/edtconf-2026/edtconf-2026-industrial-talks
-  deadline: '2026-07-01 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: ''
-  place: ''
-  sub: *id004
-  type: conference
-- title: MODELS - Extended Abstracts
-  hindex: null
-  year: 2026
-  id: models-extended-abstracts-2026
-  link: https://conf.researchr.org/track/edtconf-2026/edtconf-2026-extended-abstracts
-  deadline: '2026-07-01 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: ''
-  place: ''
-  sub: *id004
-  type: conference
 - title: MODELS - EDTconf Industrial Talks
   hindex: null
   year: 2026
@@ -1234,34 +1145,12 @@
   place: ''
   sub: *id001
   type: conference
-- title: ICSE - Voices of the Industry Track
-  hindex: null
-  year: 2026
-  id: icse-voices-of-the-industry-track-2026
-  link: https://conf.researchr.org/track/chase-2026/chase-2026-voices-of-the-industry-track
-  deadline: '2026-02-02 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
 - title: ICSE - CHASE Voices of the Industry Track
   hindex: null
   year: 2026
   id: icse-chase-voices-of-the-industry-track-2026
   link: https://conf.researchr.org/track/chase-2026/chase-2026-voices-of-the-industry-track
   deadline: '2026-02-02 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-- title: ICSE - Doctoral and Early Career Symposium (DECS)
-  hindex: null
-  year: 2026
-  id: icse-doctoral-and-early-career-symposium-decs-2026
-  link: https://conf.researchr.org/track/chase-2026/chase-2026-decs-papers
-  deadline: '2026-01-29 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1306,17 +1195,6 @@
   id: icse-mo2re-2026
   link: https://conf.researchr.org/home/icse-2026/mo2re-2026
   deadline: '2026-01-18 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-- title: ICSE - Journal First
-  hindex: null
-  year: 2026
-  id: icse-journal-first-2026
-  link: https://conf.researchr.org/track/icpc-2026/icpc-2026-journal-first
-  deadline: '2026-01-16 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1438,7 +1316,7 @@
   hindex: null
   year: 2026
   id: icse-msr-mining-challenge-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-mining-challenge
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-mining-challenge
   deadline: '2025-12-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -1450,7 +1328,7 @@
   hindex: null
   year: 2026
   id: icse-msr-industry-track-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-industry-track
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-industry-track
   deadline: '2025-12-19 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -1469,29 +1347,6 @@
   sub: *id001
   type: conference
   abstract_deadline: '2025-12-04 23:59:59'
-- title: ICSE - Artifact Track
-  hindex: null
-  year: 2026
-  id: icse-artifact-track-2026
-  link: https://conf.researchr.org/track/seams-2026/seams-2026-artifact-track
-  deadline: '2025-12-15 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-  abstract_deadline: '2025-12-04 23:59:59'
-- title: ICSE - Replications and Negative Results (RENE)
-  hindex: null
-  year: 2026
-  id: icse-replications-and-negative-results-rene-2026
-  link: https://conf.researchr.org/track/icpc-2026/icpc-2026-replications-and-negative-results--rene-
-  deadline: '2025-12-12 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
 - title: ICSE - ICPC Replications and Negative Results (RENE)
   hindex: null
   year: 2026
@@ -1503,18 +1358,6 @@
   place: ''
   sub: *id001
   type: conference
-- title: ICSE - Tool Demonstration
-  hindex: null
-  year: 2026
-  id: icse-tool-demonstration-2026
-  link: https://conf.researchr.org/track/icpc-2026/icpc-2026-tool-demonstration
-  deadline: '2025-12-08 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-  abstract_deadline: '2025-12-01 23:59:59'
 - title: ICSE - ICPC Tool Demonstration
   hindex: null
   year: 2026
@@ -1577,17 +1420,6 @@
   id: icse-data-and-benchmarking-2026
   link: https://conf.researchr.org/committee/forge-2026/forge-2026-benchmarking-program-committee
   deadline: '2025-11-21 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-- title: ICSE - Industry Track
-  hindex: null
-  year: 2026
-  id: icse-industry-track-2026
-  link: https://conf.researchr.org/track/cain-2026/cain-2026-industry-track
-  deadline: '2025-11-18 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
   place: ''
@@ -1660,18 +1492,6 @@
   sub: *id001
   type: conference
   abstract_deadline: '2025-11-10 23:59:59'
-- title: ICSE - Early Research Achievements (ERA)
-  hindex: null
-  year: 2026
-  id: icse-early-research-achievements-era-2026
-  link: https://conf.researchr.org/track/icpc-2026/icpc-2026-early-research-achievements-era
-  deadline: '2025-11-17 23:59:59'
-  timezone: AoE (UTC-12h)
-  date: April 12-18 2026
-  place: ''
-  sub: *id001
-  type: conference
-  abstract_deadline: '2025-11-10 23:59:59'
 - title: ICSE - SRC - ACM Student Research Competition
   hindex: null
   year: 2026
@@ -1698,7 +1518,7 @@
   hindex: null
   year: 2026
   id: icse-nse-2026
-  link: https://conf.researchr.org/home/icse-2026/finanse-2026
+  link: https://conf.researchr.org/home/icse-2026/nse-2026
   deadline: '2025-11-10 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -1709,7 +1529,7 @@
   hindex: null
   year: 2026
   id: icse-msr-data-and-tool-showcase-track-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-data-and-tool-showcase-track
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-data-and-tool-showcase-track
   deadline: '2025-11-10 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -1765,7 +1585,7 @@
   hindex: null
   year: 2026
   id: icse-formalise-research-track-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-formalise-research-track
+  link: https://conf.researchr.org/home/Formalise-2026
   deadline: '2025-11-06 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026
@@ -2032,7 +1852,7 @@
   hindex: null
   year: 2026
   id: icse-msr-technical-papers-2026
-  link: https://conf.researchr.org/track/icse-2026/icse-2026-msr-technical-papers
+  link: https://conf.researchr.org/track/msr-2026/msr-2026-technical-papers
   deadline: '2025-10-23 23:59:59'
   timezone: AoE (UTC-12h)
   date: April 12-18 2026

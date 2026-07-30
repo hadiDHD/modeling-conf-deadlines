@@ -23,17 +23,15 @@ permalink: /calendar/
 
       <br>
 
-      <!-- Filter Form -->
+      <!-- Side Filter and Calendar Layout -->
       <div class="row">
-        <form class="container">
-          <div class="row justify-content-center">
-            <div class="row align-items-md-center col-12 col-10-md">
-              <div class="col-12 col-md-5 filter-label">
-                <label for="subject-select" class="align-center" style="margin-bottom: 0px; line-height: 1.5;">
-                  Subject Filter:
-                </label>
-              </div>
-              <div class="col-12 col-md-6">
+        <!-- Sidebar column for filters -->
+        <div class="col-12 col-md-4 col-lg-3">
+          <div class="card p-3 mb-4 filter-card">
+            <h5 class="card-title mb-3">Filters</h5>
+            <form>
+              <div class="form-group mb-3">
+                <label for="subject-select" class="form-label">Subject Filter:</label>
                 <select
                   id="subject-select"
                   name="subject-select"
@@ -47,13 +45,23 @@ permalink: /calendar/
                   {% endfor %}
                 </select>
               </div>
-            </div>
+              <div class="form-group mb-3" style="margin-top: 15px;">
+                <label for="venue-select" class="form-label">Venue Filter:</label>
+                <select
+                  id="venue-select"
+                  name="venue-select"
+                  multiple="multiple"
+                  style="display: none"
+                >
+                </select>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
+        </div>
 
-      <br>
-      <div id="calendar-page" class="calendar-page"></div>
+        <!-- Main Column for Calendar -->
+        <div class="col-12 col-md-8 col-lg-9">
+          <div id="calendar-page" class="calendar-page"></div>
 
       <div class="modal fade" id="event-modal">
         <div class="modal-dialog">
@@ -119,6 +127,8 @@ permalink: /calendar/
         </div>
         {% endfor %}
       </div>
+      </div>
+      </div>
       <hr>
       <footer>
         {% include footer.html %}
@@ -140,14 +150,69 @@ permalink: /calendar/
 
 
       $(function () {
-        // Get data from URL/Cache
-        {% include handle_url_retrieval.js %}
-
         conf_list_all = load_conference_list();
         conf_list = conf_list_all;
 
-        // Render calendar
-        update_filtering({ subs: subs, all_subs: all_subs });
+        // Extract unique venues from conf_list_all
+        var venues_set = new Set();
+        conf_list_all.forEach(function(item) {
+          if (item.venue) {
+            venues_set.add(item.venue);
+          }
+        });
+        all_venues = Array.from(venues_set).sort();
+        venues = [];
+
+        var $venueSelect = $("#venue-select");
+        all_venues.forEach(function(venue) {
+          $venueSelect.append('<option value="' + venue + '">' + venue + '</option>');
+        });
+
+        $("#venue-select").multiselect({
+          includeSelectAllOption: true,
+          numberDisplayed: 5,
+          onChange: function (option, checked, select) {
+            var cvenue = $(option).val();
+            if (checked == true) {
+              if (venues.indexOf(cvenue) < 0) venues.push(cvenue);
+            } else {
+              var idx = venues.indexOf(cvenue);
+              if (idx >= 0) venues.splice(idx, 1);
+            }
+            update_filtering({ subs: subs, all_subs: all_subs, venues: venues, all_venues: all_venues });
+          },
+          onSelectAll: function (options) {
+            venues = all_venues.slice();
+            update_filtering({ subs: subs, all_subs: all_subs, venues: venues, all_venues: all_venues });
+          },
+          onDeselectAll: function (options) {
+            venues = [];
+            update_filtering({ subs: subs, all_subs: all_subs, venues: venues, all_venues: all_venues });
+          },
+          buttonText: function (options, select) {
+            if (options.length === 0) {
+              return "None selected";
+            } else if (options.length > 2) {
+              return options.length + " selected";
+            } else {
+              var labels = [];
+              options.each(function () {
+                if ($(this).attr("value") !== undefined) {
+                  labels.push($(this).attr("value"));
+                } else {
+                  labels.push($(this).html());
+                }
+              });
+              return labels.join(", ") + "";
+            }
+          },
+          buttonTitle: function (options, select) {
+            return "";
+          },
+        });
+
+        // Get data from URL/Cache
+        {% include handle_url_retrieval.js %}
       });
 
 

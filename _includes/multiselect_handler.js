@@ -14,19 +14,30 @@ $("#subject-select").multiselect({
         // $('.' + subs[i] + '-conf').show();
       }
     }
-    update_filtering({ subs: subs, all_subs: all_subs });
+    update_venue_options_from_subjects(subs);
+    var active_venues = typeof venues !== 'undefined' ? venues : [];
+    var active_all_venues = typeof all_venues !== 'undefined' ? all_venues : [];
+    update_filtering({ subs: subs, all_subs: all_subs, venues: active_venues, all_venues: active_all_venues });
   },
   onSelectAll: function (options) {
     subs = all_subs;
-    update_filtering({ subs: subs, all_subs: all_subs });
+    update_venue_options_from_subjects(subs);
+    var active_venues = typeof venues !== 'undefined' ? venues : [];
+    var active_all_venues = typeof all_venues !== 'undefined' ? all_venues : [];
+    update_filtering({ subs: subs, all_subs: all_subs, venues: active_venues, all_venues: active_all_venues });
   },
   onDeselectAll: function (options) {
     subs = [];
-    update_filtering({ subs: subs, all_subs: all_subs });
+    update_venue_options_from_subjects(subs);
+    var active_venues = typeof venues !== 'undefined' ? venues : [];
+    var active_all_venues = typeof all_venues !== 'undefined' ? all_venues : [];
+    update_filtering({ subs: subs, all_subs: all_subs, venues: active_venues, all_venues: active_all_venues });
   },
   buttonText: function (options, select) {
     if (options.length === 0) {
       return "None selected";
+    } else if (options.length > 2) {
+      return options.length + " selected";
     } else {
       var labels = [];
       options.each(function () {

@@ -90,6 +90,7 @@ function load_conference_list() {
       id: "{{conf.id}}-deadline",
       abbreviation: "{{conf.id}}",
       name: "{{conf.title}} {{conf.year}}",
+      venue: "{{conf.title | split: ' - ' | first}}",
       color: "red",
       location: "{{conf.place}}",
       date: "{{conf.date}}",
@@ -112,6 +113,7 @@ function load_conference_list() {
         id: "{{conf.id}}-conference",
         abbreviation: "{{conf.id}}",
         name: "{{conf.title}} {{conf.year}}",
+        venue: "{{conf.title | split: ' - ' | first}}",
         color: color,
         location: "{{conf.place}}",
         date: "{{conf.date}}",
@@ -128,22 +130,36 @@ function load_conference_list() {
 
 function update_filtering(data) {
   store.set('{{site.domain}}-subs', data.subs);
+  if (data.venues) {
+    store.set('{{site.domain}}-venues', data.venues);
+  }
+
+  var active_venues = data.venues || (typeof venues !== 'undefined' ? venues : []);
 
   conf_list = conf_list_all.filter(v => {
     var commonValues = data.subs.filter(function (value) {
       return v.subject.indexOf(value) > -1;
     });
     var subject_match = commonValues.length > 0;
-    return subject_match;
+    var venue_match = active_venues.indexOf(v.venue) > -1;
+    return subject_match && venue_match;
   });
 
   // rerender calendar
   calendar_data['dataSource'] = conf_list;  // need to update only this
   calendar = new Calendar("#calendar-page", calendar_data);
 
-  if (subs.length == 0) {
-    window.history.pushState('', '', page_url);
+  var urlParams = new URLSearchParams();
+  if (data.subs.length > 0) {
+    urlParams.set("sub", data.subs.join());
+  }
+  if (active_venues.length > 0) {
+    urlParams.set("venue", active_venues.join());
+  }
+  var queryString = urlParams.toString();
+  if (queryString.length > 0) {
+    window.history.pushState('', '', page_url + '/?' + queryString);
   } else {
-    window.history.pushState('', '', page_url + '/?sub=' + data.subs.join());
+    window.history.pushState('', '', page_url);
   }
 }
