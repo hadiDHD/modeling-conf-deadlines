@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  website:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: conference-deadlines-web
+    ports:
+      - "4000:8000"
+    volumes:
+      - ./_data:/app/_data
+      - ./_layouts:/app/_layouts
+      - ./_includes:/app/_includes
+      - ./_pages:/app/_pages
+      - ./static:/app/static
+      - ./index.html:/app/index.html
+      - ./calendar.html:/app/calendar.html
+    restart: unless-stopped
+
+  crawl4ai:
+    image: unclecode/crawl4ai:latest
+    container_name: crawl4ai
+    ports:
+      - "11235:11235"
+    environment:
+      - CRAWL4AI_API_TOKEN=testtoken
+    restart: unless-stopped

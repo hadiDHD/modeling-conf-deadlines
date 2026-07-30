@@ -1,7 +1,9 @@
----
 - name: Programming Languages
   sub: PL
+  color: "#b45309"
 - name: Software Engineering
   sub: SE
+  color: "#4338ca"
 - name: Databases / Conceptual Modeling
   sub: DB
+  color: "#047857"

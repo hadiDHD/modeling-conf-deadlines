@@ -4,7 +4,59 @@ Countdown timers for **modeling, software engineering, and conceptual modeling**
 
 **Live site:** [hadiDHD.github.io/modeling-conf-deadlines](https://hadiDHD.github.io/modeling-conf-deadlines)
 
-## GitHub Pages setup
+## Running the Website Locally
+
+### Option 1: Docker Compose (Recommended)
+
+Simply start Docker Compose to spin up both the **website** and the **Crawl4AI crawler service**:
+
+```bash
+docker compose up -d
+```
+
+- **Website**: Open [http://localhost:4000](http://localhost:4000) in your browser.
+- **Crawl4AI Service**: Running on `http://localhost:11235`.
+
+### Option 2: Python / Jekyll Locally
+
+If you prefer running without Docker:
+
+```bash
+# Build the static site
+python scripts/build_site.py
+
+# Serve locally at http://localhost:8000
+python -m http.server 8000 --directory _site
+```
+
+---
+
+## Crawl4AI Local Docker Agent
+
+To update upcoming deadlines, discover next year's conference webpages, and fetch workshop/track dates using **Crawl4AI**:
+
+1. Ensure Docker services are running:
+   ```bash
+   docker compose up -d
+   ```
+2. Install Python dependencies:
+   ```bash
+   pip install -r scripts/requirements.txt
+   ```
+3. Run the Crawl4AI Agent:
+   ```bash
+   python scripts/crawl_with_crawl4ai.py
+   ```
+
+The agent will:
+- Crawl each conference webpage.
+- Probe and discover next year's webpage (e.g. ICSE 2027, FASE 2027) if missing.
+- Extract submission and abstract deadlines for main tracks, workshops, and co-located events.
+- Update `_data/conferences.yml`.
+
+---
+
+## GitHub Pages Setup
 
 This site is built with **GitHub Actions** (the `github-pages` gem doesn't satisfy GitHub's built-in build).
 
@@ -13,7 +65,9 @@ This site is built with **GitHub Actions** (the `github-pages` gem doesn't satis
 3. Push to `main` (or run the "Deploy Jekyll to GitHub Pages" workflow manually). The workflow builds Jekyll with `bundle exec jekyll build` and deploys to Pages.
 4. Site URL: **https://hadiDHD.github.io/modeling-conf-deadlines/**
 
-## Auto-sync
+---
+
+## Auto-Sync
 
 This fork automatically updates `_data/conferences.yml`:
 
@@ -21,11 +75,11 @@ This fork automatically updates `_data/conferences.yml`:
 - **Researchr API** — deadlines for MODELS, ECMFA, SLE, ER, POEM, ICSE, ASE, SSBSE, FASE, MoDELSWARD, ANNSIM, and others
 - **Optional** [WikiCFP](http://www.wikicfp.com/) RSS for software-engineering CFPs
 
-Runs on [GitHub Actions](.github/workflows/sync-deadlines.yml) (schedule + manual trigger). No crawlers; public repo = free.
+Runs on [GitHub Actions](.github/workflows/sync-deadlines.yml) (schedule + manual trigger).
+
+---
 
 ## Contributing
-
-Contributions are welcome.
 
 To add or update a deadline manually:
 
@@ -35,10 +89,7 @@ To add or update a deadline manually:
 3. Optionally add `note` and `abstract_deadline` for separate abstract deadlines
 4. Open a pull request
 
-## Upstream & forks
-
-- **Upstream:** [judithmichael/modeling-conf-deadlines](https://github.com/judithmichael/modeling-conf-deadlines)
-- [PL/SE deadlines](https://madhunimmo.github.io/plse-deadlines?sub=SE,PL) by @MadhuNimmo
+---
 
 ## License
 

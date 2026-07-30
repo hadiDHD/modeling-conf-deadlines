@@ -51,7 +51,7 @@ YEAR_MAX = CURRENT_YEAR + 2
 # Links are the authoritative URLs you requested.
 CANONICAL_CONFERENCES = [
     {"title": "MODELS", "id": "models2026", "link": "https://conf.researchr.org/home/models-2026", "year": 2026, "sub": "SE"},
-    {"title": "MODELS Workshops", "id": "models-workshops2026", "link": "https://conf.researchr.org/track/models-2026/models-2026-workshops", "year": 2026, "sub": "SE"},
+    {"title": "MODELS - Workshops", "id": "models-workshops-2026", "link": "https://conf.researchr.org/track/models-2026/models-2026-workshops", "year": 2026, "sub": "SE"},
     {"title": "ECMFA", "id": "ecmfa2026", "link": "https://conf.researchr.org/track/ecmfa-2026/ecmfa-2026", "year": 2026, "sub": "SE"},
     {"title": "SLE", "id": "sle2026", "link": "https://conf.researchr.org/home/sle-2026", "year": 2026, "sub": "SE"},
     {"title": "ER", "id": "er2026", "link": "https://er2026.org", "year": 2026, "sub": "DB"},
@@ -137,65 +137,117 @@ def researchr_slug_from_link(link: str) -> str | None:
     return None
 
 
-def fetch_deadline_from_researchr_dates(slug: str) -> str | None:
+def fetch_researchr_dates_table(slug: str) -> list[tuple[str, str, str]]:
     """
-    Fetch conf.researchr.org/dates/{slug} and parse the main submission deadline
-    (Paper Submission preferred, then Abstract Submission, then generic
-    Submission Deadline). Returns 'YYYY-MM-DD 23:59:59' or None on failure.
-    Uses the primary deadline even if it is in the past, so the site can show
-    the date (e.g. "Mar 6, 2026" or "passed") instead of TBA.
+    Fetch conf.researchr.org/dates/{slug} and parse table rows.
+    Returns list of tuples: (date_raw, track_name, event_name).
     """
     url = f"{RESEARCHR_DATES_BASE}/{slug}"
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "ConferenceSync/1.0 (https://github.com/hadiDHD/modeling-conf-deadlines)"})
+        req = urllib.request.Request(url, headers={"User-Agent": _USER_AGENT if "_USER_AGENT" in globals() else "ConferenceSync/1.0"})
         with urllib.request.urlopen(req, timeout=15) as resp:
             html = resp.read().decode("utf-8", errors="replace")
     except Exception:
-        return None
-    # Parse table rows: <tr>...<td>date</td><td>track</td><td>what</td>...
+        return []
+    
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.DOTALL | re.IGNORECASE)
-    candidates = []  # (date_str, priority); lower priority = prefer first
+    parsed_rows = []
     for row in rows:
         cells = re.findall(r"<td[^>]*>(.*?)</td>", row, re.DOTALL | re.IGNORECASE)
         if len(cells) < 3:
             continue
         date_raw = re.sub(r"<[^>]+>", "", cells[0]).strip()
-        what_raw = re.sub(r"<[^>]+>", "", cells[2]).strip().lower()
-        # Prefer Paper Submission, then Abstract Submission, then generic Submission Deadline
-        if "paper submission" in what_raw:
-            candidates.append((date_raw, 0))
-        elif "abstract submission" in what_raw:
-            candidates.append((date_raw, 1))
-        elif "submission deadline" in what_raw:
-            candidates.append((date_raw, 2))
-    if not candidates:
+        track_name = re.sub(r"<[^>]+>", "", cells[1]).strip()
+        event_name = re.sub(r"<[^>]+>", "", cells[2]).strip()
+        parsed_rows.append((date_raw, track_name, event_name))
+    return parsed_rows
+
+
+def _parse_date_tuple(s: str) -> tuple[int, int, int] | None:
+    m = re.search(r"\w+\s+(\d{1,2})\s+(\w{3})\s+(\d{4})", s.strip())
+    if not m:
         return None
-
-    def parse_date(s: str) -> tuple[int, int, int] | None:
-        # Support ranges like "Mon 20 Oct - Mon 3 Nov 2025" via search
-        m = re.search(r"\w+\s+(\d{1,2})\s+(\w{3})\s+(\d{4})", s.strip())
-        if not m:
-            return None
-        day, mon, year = int(m.group(1)), m.group(2).lower()[:3], int(m.group(3))
-        month = _MONTHS.get(mon)
-        if not month:
-            return None
-        return (year, month, day)
-
-    # Sort by priority (paper first), then by date (earliest first)
-    def key(c: tuple[str, int]):
-        prio = c[1]
-        parsed = parse_date(c[0])
-        return (prio, parsed if parsed else (9999, 99, 99))
-
-    candidates.sort(key=key)
-    # Return the primary deadline (first after sort), even if in the past
-    date_str = candidates[0][0]
-    parsed = parse_date(date_str)
-    if not parsed:
+    day, mon, year = int(m.group(1)), m.group(2).lower()[:3], int(m.group(3))
+    month = _MONTHS.get(mon)
+    if not month:
         return None
-    year, month, day = parsed
-    return f"{year}-{month:02d}-{day:02d} 23:59:59"
+    return (year, month, day)
+
+
+_SLUG_DATES_CACHE: dict[str, list[tuple[str, str, str]]] = {}
+
+
+def get_researchr_dates_for_slug(slug: str) -> list[tuple[str, str, str]]:
+    if slug not in _SLUG_DATES_CACHE:
+        _SLUG_DATES_CACHE[slug] = fetch_researchr_dates_table(slug)
+    return _SLUG_DATES_CACHE[slug]
+
+
+def fetch_deadline_from_researchr_dates(slug: str, title: str | None = None) -> tuple[str | None, str | None]:
+    """
+    Fetch conf.researchr.org/dates/{slug} and parse submission deadlines.
+    Returns (deadline, abstract_deadline) or (None, None).
+    
+    When title represents a sub-track, matches that specific track name on the dates page.
+    When title is a main track, matches main track keys or primary submission deadline.
+    """
+    rows = get_researchr_dates_for_slug(slug)
+    if not rows:
+        return None, None
+
+    subtrack_target = None
+    if title and " - " in title:
+        conf_base, raw_sub = title.split(" - ", 1)
+        subtrack_target = raw_sub.strip()
+
+    def norm(s: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", s.lower())
+
+    paper_candidates = []
+    abstract_candidates = []
+
+    for date_raw, track_name, event_name in rows:
+        parsed_dt = _parse_date_tuple(date_raw)
+        if not parsed_dt:
+            continue
+        y, m, d = parsed_dt
+        dt_str = f"{y}-{m:02d}-{d:02d} 23:59:59"
+        
+        event_lower = event_name.lower()
+        track_norm = norm(track_name)
+
+        if subtrack_target:
+            target_norm = norm(subtrack_target)
+            conf_acronym = title.split(" - ")[0].split()[0]
+            clean_track_norm = norm(re.sub(rf"^{re.escape(conf_acronym)}", "", track_name, flags=re.IGNORECASE))
+            
+            is_match = (
+                target_norm in track_norm or
+                track_norm in target_norm or
+                (clean_track_norm and clean_track_norm in target_norm) or
+                (clean_track_norm and target_norm in clean_track_norm)
+            )
+            if not is_match:
+                continue
+        else:
+            main_keys = ["research track", "research papers", "main track", "technical track"]
+            if track_norm and not any(k in track_name.lower() for k in main_keys) and "track" in track_norm:
+                if any(w in track_name.lower() for w in ["symposium", "workshop", "demo", "doctoral", "artifact", "poster"]):
+                    continue
+
+        if "abstract" in event_lower:
+            abstract_candidates.append(dt_str)
+        elif any(k in event_lower for k in ["paper submission", "submission deadline", "paper deadline", "submission"]):
+            paper_candidates.append(dt_str)
+
+    deadline = paper_candidates[0] if paper_candidates else None
+    abstract_deadline = abstract_candidates[0] if abstract_candidates else None
+
+    if deadline and abstract_deadline and abstract_deadline > deadline:
+        print(f"[Warning] Abstract deadline ({abstract_deadline}) is after submission deadline ({deadline}) for '{title or slug}'. Swapping.")
+        abstract_deadline, deadline = deadline, abstract_deadline
+
+    return deadline, abstract_deadline
 
 
 # --- Non-Researchr conference deadline fetchers (timeout 10s) ---
@@ -451,11 +503,13 @@ def load_existing() -> list[dict]:
         return []
     with open(CONF_FILE, encoding="utf-8") as f:
         raw = f.read()
-    raw = _normalize_yaml_list(raw)
     try:
         data = yaml.safe_load(raw)
     except yaml.YAMLError:
-        return []
+        try:
+            data = yaml.safe_load(_normalize_yaml_list(raw))
+        except yaml.YAMLError:
+            return []
     if data is None:
         return []
     entries = data if isinstance(data, list) else []
@@ -571,6 +625,117 @@ def merge_wikicfp(existing: list[dict], rss_entries: list[dict]) -> list[dict]:
     return existing
 
 
+def slugify(text: str) -> str:
+    text = re.sub(r"[^a-zA-Z0-9\s-]", "", text.lower())
+    text = re.sub(r"[\s-]+", "-", text).strip("-")
+    return text
+
+
+def clean_track_title(conf_base: str, trk_name: str) -> str | None:
+    base_clean = conf_base.replace(" Workshops", "").strip()
+    trk = trk_name.strip()
+    acronyms = ["MODELS Workshops", "MODELS", "ICSE", "ASE", "ER", "ECMFA", "SLE", "FSE", "RE", "SPLASH", "SSBSE", "POEM", "FASE", "ANNSIM", "MoDELSWARD", conf_base, base_clean]
+    acronym_pattern = "|".join(re.escape(a) for a in acronyms)
+    
+    pattern = rf"^(?:{acronym_pattern})\b[\s\-_:]*(?:\d{{4}}\b)?[\s\-_:]*"
+    trk_stripped = re.sub(pattern, "", trk, flags=re.IGNORECASE).strip()
+    trk_stripped = re.sub(r"^\d{4}\b[\s\-_:]*", "", trk_stripped).strip()
+    trk_stripped = re.sub(r"[\s\-_:]*\b\d{4}$", "", trk_stripped).strip()
+
+    if not trk_stripped or trk_stripped.lower() == base_clean.lower():
+        return None
+        
+    if trk_stripped.lower() in ["research track", "research papers", "main track", "technical track"]:
+        return None
+        
+    return f"{base_clean} - {trk_stripped}"
+
+
+def clean_entry_title(title: str) -> str:
+    if not title:
+        return ""
+    if " - " in title:
+        conf_base, trk_name = title.split(" - ", 1)
+        cleaned = clean_track_title(conf_base, trk_name)
+        if cleaned:
+            return cleaned
+        base_clean = conf_base.replace(" Workshops", "").strip()
+        return base_clean
+    return title.strip()
+
+
+def fix_misleading_link(entry: dict) -> None:
+    link = entry.get("link", "")
+    title = entry.get("title", "")
+    year = entry.get("year", 2026)
+    
+    if "povc-2026" in link and "POVC" not in title.upper():
+        conf_base = title.split(" - ")[0].replace(" Workshops", "").strip()
+        main_slug = f"{conf_base.lower()}-{year}"
+        sub_part = title.split(" - ")[1] if " - " in title else ""
+        if sub_part:
+            trk_slug = slugify(sub_part)
+            entry["link"] = f"https://conf.researchr.org/track/{main_slug}/{main_slug}-{trk_slug}"
+        else:
+            entry["link"] = f"https://conf.researchr.org/home/{main_slug}"
+
+
+def validate_and_fix_deadlines(entry: dict) -> None:
+    dl = entry.get("deadline")
+    adl = entry.get("abstract_deadline")
+    title = entry.get("title", "Unknown")
+    
+    if not dl or not adl or dl == "TBA" or adl == "TBA":
+        return
+        
+    if adl > dl:
+        print(f"[Warning] Abstract deadline ({adl}) is after submission deadline ({dl}) for '{title}'. Swapping.")
+        entry["abstract_deadline"], entry["deadline"] = dl, adl
+
+
+def clean_and_deduplicate_entries(entries: list[dict]) -> list[dict]:
+    cleaned_map: dict[tuple[str, int | None], dict] = {}
+    canonical_ids = {
+        "models2026", "models-workshops2026", "icse2026", "ase2026", "sle2026",
+        "er2026", "ecmfa2026", "poem2026", "ssbse2026", "annsim2026",
+        "modelsward2026", "fase2026", "sosym", "jss", "emse", "tosem",
+        "tse", "jot", "smpat"
+    }
+
+    for e in entries:
+        title = e.get("title", "")
+        year = e.get("year")
+        
+        new_title = clean_entry_title(title)
+        if new_title:
+            e["title"] = new_title
+            
+        fix_misleading_link(e)
+        validate_and_fix_deadlines(e)
+        
+        if e.get("id") not in canonical_ids:
+            conf_base = e["title"].split(" - ")[0].strip()
+            sub_part = e["title"].split(" - ")[1] if " - " in e["title"] else ""
+            if sub_part:
+                e["id"] = slugify(f"{conf_base}-{sub_part}-{year}")
+            else:
+                e["id"] = slugify(f"{conf_base}-{year}")
+
+        key = (e["title"], e.get("year"))
+        if key not in cleaned_map:
+            cleaned_map[key] = e
+        else:
+            existing = cleaned_map[key]
+            if (existing.get("deadline") == "TBA" or not existing.get("deadline")) and e.get("deadline") and e["deadline"] != "TBA":
+                existing["deadline"] = e["deadline"]
+            if not existing.get("abstract_deadline") and e.get("abstract_deadline"):
+                existing["abstract_deadline"] = e["abstract_deadline"]
+            if "povc-2026" in existing.get("link", "") and "povc-2026" not in e.get("link", ""):
+                existing["link"] = e["link"]
+
+    return list(cleaned_map.values())
+
+
 def sort_entries(entries: list[dict]) -> list[dict]:
     """Sort by deadline descending (upcoming first), then by year, then title."""
     def key(e):
@@ -669,7 +834,6 @@ def main() -> None:
             e["type"] = "conference"
 
     # Fill TBA deadlines from Researchr dates pages (no hardcoded list)
-    slug_deadline_cache: dict[str, str | None] = {}
     for e in merged:
         if e.get("type") != "conference":
             continue
@@ -679,11 +843,11 @@ def main() -> None:
         slug = researchr_slug_from_link(link) if link else None
         if not slug:
             continue
-        if slug not in slug_deadline_cache:
-            slug_deadline_cache[slug] = fetch_deadline_from_researchr_dates(slug)
-        deadline = slug_deadline_cache[slug]
+        deadline, abstract_deadline = fetch_deadline_from_researchr_dates(slug, title=e.get("title"))
         if deadline:
             e["deadline"] = deadline
+        if abstract_deadline and not e.get("abstract_deadline"):
+            e["abstract_deadline"] = abstract_deadline
 
     # Fill remaining TBA conferences from non-Researchr sites (per-domain fetchers)
     for e in merged:
@@ -699,6 +863,7 @@ def main() -> None:
         except Exception:
             pass  # do not fail the whole sync if one fetch fails
 
+    merged = clean_and_deduplicate_entries(merged)
     merged = sort_entries(merged)
     save_entries(merged)
 
